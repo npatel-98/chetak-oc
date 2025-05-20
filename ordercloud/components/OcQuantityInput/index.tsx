@@ -27,7 +27,7 @@ const OcQuantityInput: FunctionComponent<OcQuantityInputProps> = ({
   }
 
   return (
-    <label htmlFor={controlId} className="quantityWrapper font-cust mt-8 items-base">
+    <label htmlFor={controlId} className="quantityWrapper font-cust mt-8 items-center">
       {label}
       {priceSchedule?.RestrictedQuantity ? (
         // eslint-disable-next-line

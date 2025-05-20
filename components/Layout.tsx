@@ -4,6 +4,7 @@ import { FunctionComponent, useState } from 'react'
 // import logout from '../ordercloud/redux/ocAuth/logout'
 // import { useOcDispatch, useOcSelector } from '../ordercloud/redux/ocStore'
 import Image from 'next/image'
+import Link from 'next/link'
 const Layout: FunctionComponent = ({ children }) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false)
 
@@ -159,6 +160,7 @@ const Layout: FunctionComponent = ({ children }) => {
 
           {isDropDownOpen && (
             <div className="flex bg-[#f8f9fa] absolute top-[99px] right-[210px] h-[300px] w-[700px] pt-20">
+              <Link href="/products">
               <div className="flex flex-col gap-4 text-center">
                 <Image
                   src="/images/b1.webp"
@@ -169,6 +171,8 @@ const Layout: FunctionComponent = ({ children }) => {
                 />
                 <span>2309</span>
               </div>
+              </Link>
+              <Link href="/products">
               <div className="flex flex-col gap-4 text-center">
                 <Image
                   src="/images/b2.webp"
@@ -179,6 +183,9 @@ const Layout: FunctionComponent = ({ children }) => {
                 />
                 <span>2310</span>
               </div>
+              </Link>
+              <Link href="/products">
+
               <div className="flex flex-col gap-4 text-center">
                 <Image
                   src="/images/b3.webp"
@@ -189,6 +196,7 @@ const Layout: FunctionComponent = ({ children }) => {
                 />
                 <span>2311</span>
               </div>
+              </Link>
             </div>
           )}
         </header>

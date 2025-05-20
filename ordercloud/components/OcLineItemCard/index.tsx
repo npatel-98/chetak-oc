@@ -40,10 +40,9 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
   }, [lineItem, disabled, quantity])
 
   return (
-    <div className='cartWrapper'>
-
-      <div className='productTitle flex justify-between items-base'>
-        <p className=''>
+    <div className="cartWrapper">
+      <div className="productTitle flex justify-between items-base">
+        <p className="">
           {lineItem.Product.Name}
           {lineItem.Specs.map((s) => (
             <span key={s.SpecID}>
@@ -52,47 +51,44 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
             </span>
           ))}
         </p>
-        <div className="ctaActionWrapper flex">
-          { 
-            editable && (
-              <Link href={`/products/${lineItem.ProductID}?lineitem=${lineItem.ID}`}>
-                  <a aria-label="Edit Line Item" className='ctaButton px-1 w-fit text-center mx-3'>Edit</a>
-                </Link>
-            )
-          }
+        <div className="ctaActionWrapper flex gap-4">
+          {editable && (
+            <Link href={`/products/${lineItem.ProductID}?lineitem=${lineItem.ID}`}>
+              <a
+                aria-label="Edit Line Item"
+                className="py-2 px-8 rounded-3xl text-[#322b54] bg-[#47bcc8]"
+              >
+                Edit
+              </a>
+            </Link>
+          )}
 
-          {
-            editable && (
-                <button
-                  aria-label="Remove Line Item"
-                  type="button"
-                  disabled={disabled}
-                  onClick={handleRemoveLineItem}
-                  className='ctaButton px-1 w-fit text-center mx-3'
-                >
-                  Remove
-                </button>
-            )
-          }
-
+          {editable && (
+            <button
+              aria-label="Remove Line Item"
+              type="button"
+              disabled={disabled}
+              onClick={handleRemoveLineItem}
+              className="py-2 px-8 rounded-3xl text-[#322b54] bg-[#ffa9a9]"
+            >
+              Remove
+            </button>
+          )}
         </div>
       </div>
 
-      <div className='productDetails md:flex md:justify-start'>
-        
-        <div className='imgWrapper md:mr-4 md:w-1/4'>
-            {
-              product?.xp?.ImageUrl && (
-                <Image src={product?.xp?.ImageUrl} width={150} height={150} className='object-cover'/>
-              )
-            }
+      <div className="productDetails md:flex md:justify-start">
+        <div className="imgWrapper md:mr-4 md:w-1/4">
+          {product?.xp?.ImageUrl && (
+            <Image src={product?.xp?.ImageUrl} width={150} height={150} className="object-cover" />
+          )}
         </div>
 
         {editable ? (
           <>
             {product && (
-              <form onSubmit={handleUpdateLineItem} className='w-full'>
-                <div className='h-full flex justify-between items-baseline md:items-center md:flex-auto mx-2'>
+              <form onSubmit={handleUpdateLineItem} className="w-full">
+                <div className="h-full flex justify-between items-baseline md:items-center md:flex-auto mx-2">
                   <OcQuantityInput
                     controlId={`${lineItem.ID}_quantity`}
                     quantity={quantity}
@@ -104,11 +100,10 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
                     type="submit"
                     aria-label="Update Line Item Quantity"
                     disabled={isUpdateDisabled}
-                    className='ctaButton w-1/6'
-                    >
+                    className="py-2 px-8 rounded-3xl text-[#322b54] bg-[#47bcc8]"
+                  >
                     Update
                   </button>
-
                 </div>
               </form>
             )}
@@ -117,8 +112,6 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
           <p>{`Quantity: ${lineItem.Quantity}`}</p>
         )}
       </div>
-
-
     </div>
   )
 }

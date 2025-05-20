@@ -34,7 +34,7 @@ const OcCheckoutShipping: FunctionComponent<OcCheckoutStepProps> = ({ onNext, on
   }, [user])
 
   return initialized && order ? (
-    <div>
+    <div className='m-4'>
       <h2>Shipping</h2>
       {showAddressBook ? (
         <OcAddressBook

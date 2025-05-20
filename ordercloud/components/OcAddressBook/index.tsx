@@ -55,7 +55,7 @@ const OcAddressBook: FunctionComponent<OcAddressBookProps> = ({
   }, [addresses, selectedId])
 
   return addresses.length ? (
-    <div>
+    <div className='bg-red-400'>
       <label htmlFor="select_address">
         Select an address
         <select

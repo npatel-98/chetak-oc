@@ -7,6 +7,7 @@ import formatPrice from '../../utils/formatPrice'
 import OcQuantityInput from '../OcQuantityInput'
 import OcProductSpecField from './OcProductSpecField'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 interface OcProductDetailProps {
   productId: string
@@ -29,6 +30,8 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({
   const dispatch = useOcDispatch()
   const { product, specs, variants } = useOcProductDetail(productId)
   const [loading, setLoading] = useState(false)
+
+  const router = useRouter();
 
   const [specValues, setSpecValues] = useState([])
 
@@ -84,6 +87,7 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({
       if (onLineItemAdded) {
         onLineItemAdded()
       }
+      router.push('/cart');
     },
     [dispatch, product, quantity, onLineItemAdded, specValues]
   )
@@ -97,6 +101,8 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({
       if (onLineItemUpdated) {
         onLineItemUpdated()
       }
+
+      router.push('/cart');
     },
     [dispatch, lineItem, quantity, onLineItemUpdated, specValues]
   )

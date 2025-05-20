@@ -4,6 +4,7 @@ import useOcProductList from '../../hooks/useOcProductList'
 import { OcProductListOptions } from '../../redux/ocProductList'
 import OcProductCard from '../OcProductCard'
 import Image from 'next/image'
+import Link from 'next/dist/client/link'
 
 export interface OcProductListProps {
   options?: OcProductListOptions
@@ -28,12 +29,13 @@ const OcProductList: FunctionComponent<OcProductListProps> = ({ options, renderI
           <ol className="my-10 grid gap-3 container mx-auto md:grid-cols-2 lg:grid-cols-2">
             {products &&
               products.map((p) => (
-                <li key={p.ID} className="">
-                  <div className="card bg-[#eff5f7] flex rounded-r-lg">
-                    <div className="p-4">
-                      <p className="">{p.Name}</p>
-                    </div>
-                    {/* <li
+                <Link key={p.ID} href={`/products/${p.ID}`}>
+                  <li className="">
+                    <div className="card bg-[#eff5f7] flex rounded-r-lg">
+                      <div className="p-4">
+                        <p className="">{p.Name}</p>
+                      </div>
+                      {/* <li
                     key={p.ID}
                     className="bg-[#526464] mx-4 mb-4 md:w-200px md:max-w-[360px] z-10"
                   >
@@ -45,9 +47,10 @@ const OcProductList: FunctionComponent<OcProductListProps> = ({ options, renderI
                       height={500}
                     />
                   </li> */}
-                    <Image src="/images/b1.webp" height={400} width={600} />
-                  </div>
-                </li>
+                      <Image src="/images/b1.webp" height={400} width={600} />
+                    </div>
+                  </li>
+                </Link>
               ))}
           </ol>
         </>

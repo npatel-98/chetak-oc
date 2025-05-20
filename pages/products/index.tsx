@@ -34,9 +34,7 @@ const ProductListPage: FunctionComponent = () => {
   const handleRenderItem = (p: BuyerProduct) => {
     return (
       <Link href={`/products/${p.ID}`}>
-        <a>
           <OcProductCard product={p} />
-        </a>
       </Link>
     )
   }
