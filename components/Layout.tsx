@@ -1,205 +1,212 @@
 import Head from 'next/head'
+import { ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { FunctionComponent, useState } from 'react'
-// import logout from '../ordercloud/redux/ocAuth/logout'
-// import { useOcDispatch, useOcSelector } from '../ordercloud/redux/ocStore'
-import Image from 'next/image'
-const Layout: FunctionComponent = ({ children }) => {
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false)
+import ImageHelper from '../helper/Image'
+import { Poppins } from '@next/font/google'
+import Breadcrumb from './Breadcrumb'
 
-  // const dispatch = useOcDispatch()
-  // const { user, isAnonymous, loading, lineItemCount } = useOcSelector((s) => ({
-  //   user: s.ocUser.user,
-  //   loading: s.ocAuth.loading,
-  //   isAnonymous: s.ocAuth.isAnonymous,
-  //   lineItemCount: s.ocCurrentOrder.order ? s.ocCurrentOrder.order.LineItemCount : 0,
-  // }))
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['200', '400', '500', '600', '700', '800', '900'],
+})
 
-  // const MenuItems = [
-  //   {
-  //     title: 'Home',
-  //     link: '/',
-  //   },
-  //   {
-  //     title: 'Products',
-  //     link: '/products',
-  //   },
-  //   {
-  //     title: 'Cart',
-  //     link: '/cart',
-  //   },
-  // ]
+interface LayoutProps {
+  children?: ReactNode
+}
+
+const Layout = ({ children }: LayoutProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSticky, setIsSticky] = useState(false)
+  // const [categories, setCategories] = useState(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const headerHeight = 150
+      const scrollPosition = window.scrollY
+      setIsSticky(scrollPosition > headerHeight)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // useEffect(() => {
+  //   const getCategories = async () => {
+  //     if (!categories) {
+  //       const res = await Me.ListCategories({ catalogID: 'BAJAJ_Catalog' })
+  //       setCategories(res?.Items)
+  //     }
+  //   }
+  //   getCategories()
+  // }, [])
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMenuOpen])
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   return (
     <>
       <Head>
-        <title>React Headstart</title>
+        <title>{'BAJAJ Auto'}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* <header>
-        <h1>React Headstart</h1>
-        <p>{`Cart Count ${lineItemCount}`}</p>
-        <nav>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-          <Link href="/cart">
-            <a>Cart</a>
-          </Link>
-          <Link href="/products">
-            <a>Products</a>
-          </Link>
-          {isAnonymous ? (
-            <Link href="/login">
-              <a>Login</a>
-            </Link>
-          ) : (
-            <button type="button" disabled={loading} onClick={() => dispatch(logout())}>
-              Logout
-            </button>
-          )}
-          {!isAnonymous && user && <p>{`${user.FirstName} ${user.LastName}`}</p>}
-        </nav>
-      </header> */}
-
-      <div className="relative" id="header">
-        <header
-          className={`header py-3 ${
-            isDropDownOpen ? 'bg-[#f8f9fa]' : 'bg-[#0000003b]'
-          } rounded absolute top-0 w-full z-50`}
-        >
-          <div className="header__wrapper flex items-center justify-around container mx-auto">
-            {/* <div className='flex-none'> */}
-            <Image
-              src="/images/horizontal_logo.png"
-              // src='/images/storeLogo.png'
-              alt="sd"
-              height={75}
-              width={155}
-            />
-            {/* </div> */}
-
-            <div className="flex gap-24 items-center">
-              <div
-                onClick={() => {
-                  setIsDropDownOpen(!isDropDownOpen)
-                }}
-                className="flex gap-1 group"
-              >
+      <div className={poppins.className}>
+        <div className="relative" id="header">
+          <header
+            className={`header w-full z-50 transition-all duration-300 ${
+              isSticky
+                ? 'fixed top-0 left-0 right-0 py-3 bg-[#23284a] shadow-lg'
+                : 'py-3 bg-[#23284a]'
+            }`}
+          >
+            <div className="header__wrapper flex items-center justify-between container mx-auto px-4">
+              <div className="flex items-center gap-12">
+                <Link href="/">
+                  <div className="cursor-pointer">
+                    <ImageHelper
+                      key={'headerLogo'}
+                      url="https://cdn.bajajauto.com/-/media/assets/bajajauto/global/bajaj-logo2.png"
+                    />
+                  </div>
+                </Link>
+                {/* Desktop Navigation */}
+                <nav className="hidden lg:block">
+                  <ul className="flex gap-10 items-center text-white">
+                    <li>
+                      <Link href="/products" className="!text-white font-semibold hover:underline">
+                        Motorcycles
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/three-wheelers"
+                        className="!text-white font-semibold hover:underline"
+                      >
+                        3 Wheelers & Qute
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/shareholders"
+                        className="!text-white font-semibold hover:underline"
+                      >
+                        Shareholders
+                      </Link>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+              {/* Desktop Buttons */}
+              <div className="hidden lg:flex gap-4 items-center">
                 <button
                   type="button"
-                  className={`${
-                    isDropDownOpen ? 'text-black' : 'text-[#fff]'
-                  } group-hover:text-[#322b54] font-semibold`}
+                  className="py-2 px-6 rounded-3xl text-white bg-[#2563eb] font-semibold hover:bg-[#1d4ed8] transition"
                 >
-                  Explore
+                  Enquire Now
                 </button>
-                <div
-                  className={`text-white ${
-                    isDropDownOpen ? '[&>svg]:text-black' : '[&>svg]:text-white'
-                  } group-hover:[&>svg]:text-[#322b54] [&>svg]:rotate-90`}
+                <button
+                  type="button"
+                  className="py-2 px-6 rounded-3xl text-white border border-white font-semibold hover:bg-white hover:text-[#23284a] transition"
                 >
-                  <svg
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                  Visit E-showroom
+                </button>
+              </div>
+              {/* Mobile Menu Button */}
+
+              <button
+                onClick={toggleMenu}
+                className="lg:hidden text-white text-2xl rotate-90"
+                aria-label="Toggle menu"
+                key={isMenuOpen ? 'close' : 'open'}
+              >
+                |||
+              </button>
+            </div>
+          </header>
+
+          {/* Mobile Menu */}
+          <div
+            className={`fixed inset-0 bg-[#23284a] z-40 transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+              isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+            } lg:hidden`}
+          >
+            <div className="relative h-full">
+              <button
+                onClick={toggleMenu}
+                className="absolute top-4 right-4 text-white text-2xl"
+                aria-label="Close menu"
+              >
+                X
+              </button>
+              <div className="flex flex-col items-center justify-center h-full space-y-8">
+                <nav className="w-full">
+                  <ul className="flex flex-col items-center space-y-6 text-white">
+                    <li>
+                      <Link
+                        href="/products"
+                        className="!text-white text-xl font-semibold hover:underline"
+                        onClick={toggleMenu}
+                      >
+                        Motorcycles
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/three-wheelers"
+                        className="!text-white text-xl font-semibold hover:underline"
+                        onClick={toggleMenu}
+                      >
+                        3 Wheelers & Qute
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/shareholders"
+                        className="!text-white text-xl font-semibold hover:underline"
+                        onClick={toggleMenu}
+                      >
+                        Shareholders
+                      </Link>
+                    </li>
+                  </ul>
+                </nav>
+                <div className="flex flex-col gap-4 items-center">
+                  <button
+                    type="button"
+                    className="py-2 px-6 rounded-3xl text-white bg-[#2563eb] font-semibold hover:bg-[#1d4ed8] transition"
+                    onClick={toggleMenu}
                   >
-                    <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
-                  </svg>
+                    Enquire Now
+                  </button>
+                  <button
+                    type="button"
+                    className="py-2 px-6 rounded-3xl text-white border border-white font-semibold hover:bg-white hover:text-[#23284a] transition"
+                    onClick={toggleMenu}
+                  >
+                    Visit E-showroom
+                  </button>
                 </div>
               </div>
-              <div className="buttons flex gap-12">
-                <button
-                  type="button"
-                  className={`py-2 px-8 border ${
-                    !isDropDownOpen ? 'border-[#fff] text-[#fff]' : 'border-black text-black'
-                  }  rounded-3xl hover:bg-[#fff] hover:text-[#322b54] hover:delay-10`}
-                >
-                  Test Ride
-                </button>
-                <button type="button" className="py-2 px-8 rounded-3xl text-[#322b54] bg-[#47bcc8]">
-                  Book Now
-                </button>
-              </div>
-              {/* <ul className="header__lists flex flex-cols items-center w-fit">
-                {MenuItems.map((item, index) => {
-                  return (
-                    <li
-                      className="font-bold text-[#322b54] hover:text-[#322b54] cursor-pointer md:mx-4"
-                      key={index}
-                    >
-                      <Link href={item.link}>{item.title}</Link>
-                    </li>
-                  )
-                })}
-              </ul>
-
-              <div className="flex gap-4">
-                <p className="text-[#322b54]">{`Cart (${lineItemCount})`}</p>
-
-                {isAnonymous ? (
-                  <Link href="/login">
-                    <a className="text-white hover:text-indigo-400 font-bold">Login</a>
-                  </Link>
-                ) : (
-                  <button
-                    className="text-[#322b54]"
-                    type="button"
-                    disabled={loading}
-                    onClick={() => dispatch(logout())}
-                  >
-                    Logout
-                  </button>
-                )}
-              </div> */}
             </div>
           </div>
-
-          {isDropDownOpen && (
-            <div className="flex bg-[#f8f9fa] absolute top-[99px] right-[210px] h-[300px] w-[700px] pt-20">
-              <Link href="/products">
-                <div className="flex flex-col gap-4 text-center">
-                  <Image
-                    src="/images/b1.webp"
-                    // src='/images/storeLogo.png'
-                    alt="sd"
-                    height={100}
-                    width={150}
-                  />
-                  <span>2309</span>
-                </div>
-              </Link>
-              <Link href="/products">
-                <div className="flex flex-col gap-4 text-center">
-                  <Image
-                    src="/images/b2.webp"
-                    // src='/images/storeLogo.png'
-                    alt="sd"
-                    height={100}
-                    width={150}
-                  />
-                  <span>2310</span>
-                </div>
-              </Link>
-              <Link href="/products">
-                <div className="flex flex-col gap-4 text-center">
-                  <Image
-                    src="/images/b3.webp"
-                    // src='/images/storeLogo.png'
-                    alt="sd"
-                    height={100}
-                    width={150}
-                  />
-                  <span>2311</span>
-                </div>
-              </Link>
-            </div>
-          )}
-        </header>
+        </div>
+        <div className="h-[72px]"></div>
+        <Breadcrumb />
+        <main>{children}</main>
       </div>
-      <main>{children}</main>
     </>
   )
 }
