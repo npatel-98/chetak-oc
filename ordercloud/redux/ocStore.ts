@@ -1,4 +1,4 @@
-import { AnyAction, configureStore, ThunkDispatch, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { AnyAction, configureStore, ThunkDispatch } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import ocConfig from './ocConfig'
 import ocErrors from './ocErrors'
@@ -26,18 +26,17 @@ const store = configureStore({
     ocProductDetail,
     ocCurrentOrder,
   },
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-  middleware: [
-    ...getDefaultMiddleware({
-        serializableCheck: false
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+      thunk: true,
     }),
-  ],
 })
 
 export type OcRootState = ReturnType<typeof store.getState>
 export type OcDispatch = typeof store.dispatch
 export type OcThunkApi = {
-  dispatch: OcDispatch
+  dispatch: ThunkDispatch<OcRootState, null, AnyAction>
   state: OcRootState
 }
 
