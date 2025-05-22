@@ -30,7 +30,7 @@ const Layout = ({ children }: LayoutProps) => {
   const {getProductLineItems } = useOcCart()
   const cartItems = getProductLineItems();
 
-  console.log('@@cartItems', cartItems)
+  // console.log('@@cartItems', cartItems)
 
   const cartRef = useRef<HTMLDivElement>(null)
 
@@ -68,8 +68,8 @@ const Layout = ({ children }: LayoutProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const cartItemCount = cartItems.length
-  const cartTotal = cartItems.reduce((total, item) => total + (item.UnitPrice * item.Quantity), 0)
+  const cartItemCount = cartItems?.length || 0
+  const cartTotal = cartItems?.reduce((total, item) => total + (item.UnitPrice * item.Quantity), 0) || 0
 
   const handleCheckout = () => {
     // Add your checkout logic here

@@ -28,7 +28,7 @@ export default function ProductBookingPage() {
   const { addToCart }= useOcCart()
   
 
-  console.log('@@productId', productid)
+//   console.log('@@productId', productid)
 
   // Mock data - replace with your actual data
   const dealers = [
@@ -45,9 +45,9 @@ export default function ProductBookingPage() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       console.log('Form submitted:', values)
-      const res = await addToCart({productId:product?.ID,quantity:1})
+     await addToCart({productId:product?.ID,quantity:1})
       setIsBooked(true)
-      console.log("@@res",res)
+    //   console.log("@@res",res)
 
       // Simulate API call
 
