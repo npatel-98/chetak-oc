@@ -1,19 +1,17 @@
 import { Spec } from 'ordercloud-javascript-sdk'
-import { FormEvent, FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import useOcProductDetail from '../../hooks/useOcProductDetail'
-import { createLineItem, updateLineItem } from '../../redux/ocCurrentOrder'
-import { useOcDispatch, useOcSelector } from '../../redux/ocStore'
+import { useOcSelector } from '../../redux/ocStore'
 import formatPrice from '../../utils/formatPrice'
-import OcQuantityInput from '../OcQuantityInput'
 import OcProductSpecField from './OcProductSpecField'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
+import ImageHelper from '../../../helper/Image'
 
 interface OcProductDetailProps {
   productId: string
-  lineItemId?: string
-  onLineItemAdded?: () => void
-  onLineItemUpdated?: () => void
+}
+
+interface GalleryImage {
+  Url: string
 }
 
 const determineDefaultOptionId = (spec: Spec) => {
@@ -21,23 +19,14 @@ const determineDefaultOptionId = (spec: Spec) => {
   return spec.OptionCount ? spec.Options[0].ID : undefined
 }
 
-const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({
-  productId,
-  lineItemId,
-  onLineItemAdded,
-  onLineItemUpdated,
-}) => {
-  const dispatch = useOcDispatch()
-  const { product, specs, variants } = useOcProductDetail(productId)
-  const [loading, setLoading] = useState(false)
-
-  const router = useRouter();
+const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({ productId }) => {
+  const { product, specs } = useOcProductDetail(productId)
 
   const [specValues, setSpecValues] = useState([])
 
   const lineItem = useOcSelector((s) =>
-    lineItemId && s.ocCurrentOrder.lineItems
-      ? s.ocCurrentOrder.lineItems.find((li) => li.ID === lineItemId)
+    s.ocCurrentOrder.lineItems
+      ? s.ocCurrentOrder.lineItems.find((li) => li.ID === productId)
       : undefined
   )
 
@@ -57,10 +46,6 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({
     }
   }, [specs, lineItem])
 
-  const [quantity, setQuantity] = useState(
-    lineItem ? lineItem.Quantity : (product && product.PriceSchedule?.MinQuantity) || 1
-  )
-
   const handleSpecFieldChange = (values: { SpecID: string; OptionID?: string; Value?: string }) => {
     setSpecValues((sv) =>
       sv.map((s) => {
@@ -76,97 +61,141 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({
     )
   }
 
-  const handleAddToCart = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault()
-      setLoading(true)
-      await dispatch(
-        createLineItem({ ProductID: product.ID, Quantity: quantity, Specs: specValues })
-      )
-      setLoading(false)
-      if (onLineItemAdded) {
-        onLineItemAdded()
-      }
-      router.push('/cart');
-    },
-    [dispatch, product, quantity, onLineItemAdded, specValues]
-  )
-
-  const handleUpdateCart = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault()
-      setLoading(true)
-      await dispatch(updateLineItem({ ...lineItem, Quantity: quantity, Specs: specValues }))
-      setLoading(false)
-      if (onLineItemUpdated) {
-        onLineItemUpdated()
-      }
-
-      router.push('/cart');
-    },
-    [dispatch, lineItem, quantity, onLineItemUpdated, specValues]
-  )
-
   return product ? (
-    <div className="md:grid grid-cols-12 my-8 container mx-auto">
-      <div className="imageWrapper mr-5 md:col-span-7">
-        {product?.xp?.ImageUrl && (
-          // <Image
-          //   src={product?.xp?.ImageUrl}
-          //   width={1000}
-          //   height={650}
-          //   layout="responsive"
-          //   className="object-cover"
-          // />
-          <Image
-            src="/images/b1.webp"
-            width={1000}
-            height={650}
-            layout="responsive"
-            className="object-cover"
-          />
-        )}
-      </div>
+    <div className=" my-8 ">
+      <div className="container mx-auto  gap-8">
+        <div>
+          {/* Left Column: Name and Image */}
+          <div className="flex justify-between">
+            <div className="md:col-span-7 flex flex-col">
+              <div className="mb-4">
+                {/* Assuming "Bajaj Pulsar" comes from somewhere else or is static */}
+                <h2 className="text-[#0f172a] text-2xl font-black pb-4 lg:pb-8 ">{product.Name}</h2>
+              </div>
+            </div>
 
-      <div className="specWrapper md:col-span-5 p-3 z-20">
-        <h2 className="text-[#0f172a] text-2xl lg:text-6xl pb-4 lg:pb-8 ">{product.Name}</h2>
+            {/* Right Column: Price and Details */}
+            <div className="md:col-span-5 p-3 z-20">
+              {/* Add the "Pulsar NS125 price starting from" text */}
+              <p className="text-sm mb-2">Pulsar NS125 price starting from</p>
+              <p className="text-lg font-semibold pb-4 lg:pb-2 ">
+                {formatPrice(product.PriceSchedule?.PriceBreaks[0].Price)}
+              </p>
+              {/* Add the "Ex-showroom Price New Delhi Change City" text/link */}
+              <p className="text-xs">
+                Ex-showroom Price New Delhi{' '}
+                <a href="#" className="text-blue-600 hover:underline">
+                  Change City
+                </a>
+              </p>
 
-        <p className="text-2xl pb-4 lg:pb-8">
-          {formatPrice(product.PriceSchedule?.PriceBreaks[0].Price)}
-        </p>
-        <p className="" dangerouslySetInnerHTML={{ __html: product.Description }} />
+              {/* Description */}
+              <div className="mt-8">
+                <p className="" dangerouslySetInnerHTML={{ __html: product.Description }} />
+              </div>
 
-        {/* Quantyity and Add to Cart: */}
-        <form onSubmit={lineItem ? handleUpdateCart : handleAddToCart}>
-          {specs &&
-            specs.map((s) => {
-              const specValue = specValues.find((sv) => sv.SpecID === s.ID)
-              return (
-                <OcProductSpecField
-                  key={s.ID}
-                  spec={s}
-                  onChange={handleSpecFieldChange}
-                  optionId={specValue && specValue.OptionID}
-                  value={specValue && specValue.Value}
+              {/* Specs - Keep specs if needed, remove quantity and button */}
+              {specs &&
+                specs.map((s) => {
+                  const specValue = specValues.find((sv) => sv.SpecID === s.ID)
+                  return (
+                    <OcProductSpecField
+                      key={s.ID}
+                      spec={s}
+                      onChange={handleSpecFieldChange}
+                      optionId={specValue && specValue.OptionID}
+                      value={specValue && specValue.Value}
+                    />
+                  )
+                })}
+
+              {/* Removed Quantity Input and Add/Update Cart Button */}
+            </div>
+          </div>
+          {(product?.xp?.Images?.[0]?.Url || product?.xp?.Images?.[1]?.Url) && (
+            <div className="flex justify-center">
+              <ImageHelper
+                url={product?.xp?.Images?.[0]?.Url || product?.xp?.Images?.[1]?.Url}
+                className="object-cover "
+                pictureClasses="h-[420px] w-[600px]"
+              />
+            </div>
+          )}
+        </div>
+
+        {/** Product Specification */}
+        <div className="my-8 container mx-auto">
+          <h2 className="text-[#0f172a] text-2xl font-black pb-4 lg:pb-8 text-center">
+            {`${product?.Name} Specifications`}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 items-start">
+              {product?.xp?.MaxPower && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Max Power</span>
+                  <span>{product.xp.MaxPower}</span>
+                </div>
+              )}
+              {product?.xp?.RearSuspension && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Rear Suspension</span>
+                  <span>{product.xp.RearSuspension}</span>
+                </div>
+              )}
+              {product?.xp?.Displacement && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Displacement</span>
+                  <span>{product.xp.Displacement}</span>
+                </div>
+              )}
+              {product?.xp?.FuelTank && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Fuel Tank</span>
+                  <span>{product.xp.FuelTank}</span>
+                </div>
+              )}
+              {product?.xp?.EngineType && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Engine Type</span>
+                  <span>{product.xp.EngineType}</span>
+                </div>
+              )}
+              {product?.xp?.SafeBraking && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Safe Braking</span>
+                  <span>{product.xp.SafeBraking}</span>
+                </div>
+              )}
+            </div>
+            {(product?.xp?.Images?.[0]?.Url || product?.xp?.Images?.[1]?.Url) && (
+              <div className="flex justify-center scale-x-[-1]">
+                <ImageHelper
+                  url={product?.xp?.Images?.[0]?.Url || product?.xp?.Images?.[1]?.Url}
+                  className="object-cover"
+                  pictureClasses="h-[420px] w-[600px]"
                 />
-              )
-            })}
-          <OcQuantityInput
-            controlId="addToCart"
-            priceSchedule={product.PriceSchedule}
-            quantity={quantity}
-            onChange={setQuantity}
-          />
-
-          <button
-            className=" px-12 py-3 w-full md:w-3/5 mt-8 py-2 px-8 rounded-3xl text-[#322b54] bg-[#47bcc8] shadow-lg hover:shadow-stone-500 focus:shadow-stone-500 transition duration-150 ease-out hover:ease-in "
-            type="submit"
-            disabled={loading}
-          >
-            {`${lineItem ? 'Update' : 'Add To'} Cart`}
-          </button>
-        </form>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+      {/** Image gallery section*/}
+      {product?.xp?.GalleryImages && product?.xp?.GalleryImages.length > 0 && (
+        <div className="imageGallery flex flex-col  bg-[#E5E5E5] pt-10 pl-10 pb-[60px]">
+          <h2 className="text-2xl lg:text-[48px] font-bold">Pulsar NS125 Gallery</h2>
+          <div className="mt-8 flex space-x-4 w-full overflow-x-scroll">
+            {product.xp.GalleryImages.map((image: GalleryImage, index: number) => (
+              <div key={index} className="w-[300px] lg:w-[400px]">
+                <ImageHelper
+                  url={image.Url}
+                  className="w-full h-auto"
+                  pictureClasses="w-[300px] lg:w-[400px]"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   ) : null
 }

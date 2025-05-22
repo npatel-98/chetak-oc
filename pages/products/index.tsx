@@ -1,12 +1,10 @@
 import Link from 'next/link'
-import { BuyerProduct, Filters } from 'ordercloud-javascript-sdk'
-import { FunctionComponent, useCallback } from 'react'
+import { BuyerProduct } from 'ordercloud-javascript-sdk'
+import { FunctionComponent } from 'react'
 import OcProductCard from '../../ordercloud/components/OcProductCard'
-import OcProductFacetForm from '../../ordercloud/components/OcProductFacetsForm'
 import OcProductList from '../../ordercloud/components/OcProductList'
 import useNextRouterMapping, { NextQueryMap } from '../../ordercloud/hooks/useNextRouterMapping'
 import ClientOnly from '../../helper/ClientOnly'
-import Image from 'next/image'
 
 const queryMap: NextQueryMap = {
   search: 's',
@@ -21,14 +19,14 @@ const queryMap: NextQueryMap = {
 }
 
 const ProductListPage: FunctionComponent = () => {
-  const { isReady, options, updateQuery } = useNextRouterMapping(queryMap)
+  const { options } = useNextRouterMapping(queryMap)
 
-  const handleFacetChange = useCallback(
-    (updatedFilters: Filters) => {
-      updateQuery({ ...options, page: undefined, filters: updatedFilters })
-    },
-    [options, updateQuery]
-  )
+  // const handleFacetChange = useCallback(
+  //   (updatedFilters: Filters) => {
+  //     updateQuery({ ...options, page: undefined, filters: updatedFilters })
+  //   },
+  //   [options, updateQuery]
+  // )
 
   const handleRenderItem = (p: BuyerProduct) => {
     return (
@@ -38,26 +36,12 @@ const ProductListPage: FunctionComponent = () => {
     )
   }
   return (
-    isReady && (
-      <>
-        <div className="banner h-screen w-full relative flex items-center justify-center">
-          <Image
-            src="/images/product.webp"
-            alt="Home page"
-            layout="fill"
-            className="w-full overflow-hidden object-cover"
-            unoptimized
-            priority
-          />
-        </div>
-        <ClientOnly>
-          <div className="productBackgroundWrapper relative h-screen ">
-            <OcProductFacetForm onChange={handleFacetChange} />
-            <OcProductList options={options} renderItem={handleRenderItem} />
-          </div>
-        </ClientOnly>
-      </>
-    )
+    <ClientOnly>
+      <div className="productBackgroundWrapper relative h-screen ">
+        {/* <OcProductFacetForm onChange={handleFacetChange} /> */}
+        <OcProductList options={options} renderItem={handleRenderItem} />
+      </div>
+    </ClientOnly>
   )
 }
 

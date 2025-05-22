@@ -80,7 +80,13 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
       <div className="productDetails md:flex md:justify-start">
         <div className="imgWrapper md:mr-4 md:w-1/4">
           {product?.xp?.ImageUrl && (
-            <Image src={product?.xp?.ImageUrl} width={150} height={150} className="object-cover" />
+            <Image
+              alt={product?.Name}
+              src={product?.xp?.ImageUrl}
+              width={150}
+              height={150}
+              className="object-cover"
+            />
           )}
         </div>
 

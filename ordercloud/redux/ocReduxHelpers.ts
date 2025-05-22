@@ -26,19 +26,20 @@ export function createOcAsyncThunk<Returned, ThunkArg = void>(
     typePrefix,
     async (args, thunkAPI) => {
       try {
-        return await payloadCreator(args, thunkAPI)
+        const result = await payloadCreator(args, thunkAPI)
+        return result as Returned
       } catch (err) {
         if (err.isOrderCloudError) {
           switch (err.status) {
             case 401:
-              thunkAPI.dispatch(logout())
-              break
+              await thunkAPI.dispatch(logout())
+              return thunkAPI.rejectWithValue(err)
             default:
               thunkAPI.dispatch(logError(err))
-              break
+              return thunkAPI.rejectWithValue(err)
           }
         }
-        throw err
+        return thunkAPI.rejectWithValue(err)
       }
     },
     {

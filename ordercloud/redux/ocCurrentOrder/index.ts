@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from '@reduxjs/toolkit'
 import {
   BuyerAddress,
@@ -15,7 +16,6 @@ import {
   Payment,
   Payments,
 } from 'ordercloud-javascript-sdk'
-import { EMPTY_ADDRESS } from '../ocAddressBook'
 import { createOcAsyncThunk } from '../ocReduxHelpers'
 
 export interface RecentOrder {
@@ -55,7 +55,7 @@ export const removeAllPayments = createOcAsyncThunk<undefined, undefined>(
 
 export const retrievePayments = createOcAsyncThunk<RequiredDeep<Payment>[], string>(
   'ocCurrentOrder/retrievePayments',
-  async (orderId, ThunkAPI) => {
+  async (orderId) => {
     const response = await Payments.List('Outgoing', orderId, { pageSize: 100 })
     return response.Items
   }
@@ -219,7 +219,7 @@ export const removeBillingAddress = createOcAsyncThunk<RequiredDeep<OrderWorkshe
 
 export const estimateShipping = createOcAsyncThunk<RequiredDeep<OrderWorksheet>, string>(
   'ocCurrentOrder/estimateShipping',
-  async (orderId, ThunkAPI) => {
+  async (orderId) => {
     const response = await IntegrationEvents.EstimateShipping('Outgoing', orderId)
     return response
   }
@@ -349,7 +349,7 @@ const ocCurrentOrderSlice = createSlice({
     builder.addCase(removePayment.fulfilled, (state, action) => {
       state.payments = state.payments.filter((p) => p.ID !== action.payload)
     })
-    builder.addCase(removeAllPayments.fulfilled, (state, action) => {
+    builder.addCase(removeAllPayments.fulfilled, (state) => {
       state.payments = []
     })
     builder.addCase(submitOrder.fulfilled, (state, action) => {
