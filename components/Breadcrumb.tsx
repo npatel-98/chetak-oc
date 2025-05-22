@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Poppins } from '@next/font/google'
+import { useOcSelector } from '../ordercloud/redux/ocStore'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -9,18 +10,25 @@ const poppins = Poppins({
 
 const Breadcrumb = () => {
   const router = useRouter()
+
   const pathSegments = router.asPath.split('/').filter((segment) => segment)
   const isBookingPage = router.asPath.includes('/booking')
+  const productName = useOcSelector((s) => s.ocProductDetail.product?.Name)
 
   // Don't show breadcrumb on home page
   if (pathSegments.length === 0) return null
 
   const breadcrumbs = pathSegments.map((segment, index) => {
     const href = `/${pathSegments.slice(0, index + 1).join('/')}`
-    const label = segment
+    let label = segment
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
+
+    // If this segment is a product ID (matches the pattern of a product ID) and we have a product name, show the product name
+    if (productName && router?.query?.productId === segment) {
+      label = productName
+    }
 
     return {
       href,
@@ -30,7 +38,9 @@ const Breadcrumb = () => {
   })
 
   return (
-    <div className={`${poppins.className} bg-gray-50 py-3 ${isBookingPage ? 'hidden md:block' : ''}`}>
+    <div
+      className={`${poppins.className} bg-gray-50 py-3 ${isBookingPage ? 'hidden md:block' : ''}`}
+    >
       <div className="container mx-auto px-4">
         <nav className="flex" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">

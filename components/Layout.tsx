@@ -4,9 +4,13 @@ import Link from 'next/link'
 import ImageHelper from '../helper/Image'
 import { Poppins } from '@next/font/google'
 import Breadcrumb from './Breadcrumb'
-import { ShoppingCart, X } from 'lucide-react'
+import { ShoppingCart, X, Trash2 } from 'lucide-react'
 import useOcCart from '../ordercloud/redux/useOcCart'
 import { useRouter } from 'next/router'
+import Footer from './Footer'
+import FooterNav from './FooterNav'
+import { useDispatch } from 'react-redux'
+import { deleteCurrentOrder } from '../ordercloud/redux/ocCurrentOrder'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -21,14 +25,15 @@ const Layout = ({ children }: LayoutProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSticky, setIsSticky] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
-   const router = useRouter()
+  const router = useRouter()
+  const dispatch = useDispatch()
   // const [cartItems] = useState([
   //   { id: 1, name: 'Product 1', price: 1000, quantity: 1 },
   //   { id: 2, name: 'Product 2', price: 2000, quantity: 2 },
   // ])
 
-  const {getProductLineItems } = useOcCart()
-  const cartItems = getProductLineItems();
+  const { getProductLineItems } = useOcCart()
+  const cartItems = getProductLineItems()
 
   // console.log('@@cartItems', cartItems)
 
@@ -69,15 +74,22 @@ const Layout = ({ children }: LayoutProps) => {
   }, [])
 
   const cartItemCount = cartItems?.length || 0
-  const cartTotal = cartItems?.reduce((total, item) => total + (item.UnitPrice * item.Quantity), 0) || 0
+  const cartTotal =
+    cartItems?.reduce((total, item) => total + item.UnitPrice * item.Quantity, 0) || 0
 
-  const handleCheckout = () => {
-    // Add your checkout logic here
-   router?.push('/checkout')
-  }
+  // const handleCheckout = () => {
+  //   // Add your checkout logic here
+  //  router.push('/checkout')
+  //  setIsMenuOpen(false)
+  // }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
+  }
+
+  const handleClearCart = async () => {
+    dispatch(deleteCurrentOrder())
+    // setIsCartOpen(false)
   }
 
   return (
@@ -87,7 +99,7 @@ const Layout = ({ children }: LayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={poppins.className}>
+      <div className={`${poppins.className} min-h-screen flex flex-col`}>
         <div className="relative" id="header">
           <header
             className={`header w-full z-50 transition-all duration-300 ${
@@ -110,23 +122,17 @@ const Layout = ({ children }: LayoutProps) => {
                 <nav className="hidden lg:block">
                   <ul className="flex gap-10 items-center text-white">
                     <li>
-                      <Link href="/products" className="!text-white text-sm  hover:underline">
+                      <Link href="/motorcycles" className="!text-white text-sm  hover:underline">
                         Motorcycles
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        href="/three-wheelers"
-                        className="!text-white text-sm  hover:underline"
-                      >
+                      <Link href="/threeWheelers" className="!text-white text-sm  hover:underline">
                         3 Wheelers & Qute
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        href="/shareholders"
-                        className="!text-white text-sm  hover:underline"
-                      >
+                      <Link href="/shareholders" className="!text-white text-sm  hover:underline">
                         Shareholders
                       </Link>
                     </li>
@@ -147,7 +153,7 @@ const Layout = ({ children }: LayoutProps) => {
                       </span>
                     )}
                   </button>
-                  
+
                   {/* Cart Dropdown */}
                   {isCartOpen && (
                     <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50">
@@ -161,31 +167,47 @@ const Layout = ({ children }: LayoutProps) => {
                             <X size={20} />
                           </button>
                         </div>
-                        
-                        {cartItems.length > 0 ? (
+
+                        {cartItems?.length > 0 ? (
                           <>
                             <div className="max-h-60 overflow-y-auto">
                               {cartItems.map((item) => (
-                                <div key={item.ID} className="flex items-center gap-3 py-3 border-b">
+                                <div
+                                  key={item.ID}
+                                  className="flex items-center gap-3 py-3 border-b"
+                                >
                                   <div className="flex-1">
-                                    <h4 className="text-sm font-medium text-gray-800">{item.Product?.Name}</h4>
+                                    <h4 className="text-sm font-medium text-gray-800">
+                                      {item.Product?.Name}
+                                    </h4>
                                     <p className="text-sm text-gray-600">Qty: {item.Quantity}</p>
                                   </div>
-                                  <p className="text-sm font-medium text-gray-800">₹{item.UnitPrice}</p>
+                                  <p className="text-sm font-medium text-gray-800">
+                                    ₹{item.UnitPrice}
+                                  </p>
                                 </div>
                               ))}
                             </div>
-                            <div className="mt-4 pt-4 border-t">
+                            <div className="mt-4 pt-4 ">
                               <div className="flex justify-between mb-4">
                                 <span className="font-medium text-gray-800">Total:</span>
                                 <span className="font-bold text-gray-800">₹{cartTotal}</span>
                               </div>
-                              <button
-                                onClick={handleCheckout}
-                                className="w-full py-2 px-4 bg-[#2563eb] text-white rounded-lg hover:bg-[#1d4ed8] transition"
-                              >
-                                Checkout
-                              </button>
+                              <div className="flex gap-2">
+                                <Link
+                                  href={'/checkout'}
+                                  className="flex-1 py-2 px-4 bg-[#2563eb] text-white rounded-lg hover:bg-[#1d4ed8] transition text-center flex items-center justify-center "
+                                >
+                                  Checkout
+                                </Link>
+                                <button
+                                  onClick={handleClearCart}
+                                  className="flex-1 px-4 text-red-500 text-sm rounded-lg  flex items-center justify-center gap-1"
+                                >
+                                  <Trash2 size={18} color="red" />
+                                  Clear Cart
+                                </button>
+                              </div>
                             </div>
                           </>
                         ) : (
@@ -195,18 +217,22 @@ const Layout = ({ children }: LayoutProps) => {
                     </div>
                   )}
                 </div>
-                <button
-                  type="button"
-                  className="py-2 px-6 rounded-3xl text-white bg-[#2563eb]  hover:bg-[#1d4ed8] transition"
-                >
-                  Enquire Now
-                </button>
-                <button
-                  type="button"
-                  className="py-2 px-6 rounded-3xl text-white border border-white  hover:bg-white hover:text-[#23284a] transition"
-                >
-                  Visit E-showroom
-                </button>
+                {router.pathname.startsWith('/products/') && (
+                  <>
+                    <button
+                      type="button"
+                      className="py-2 px-6 rounded-3xl text-white bg-[#2563eb]  hover:bg-[#1d4ed8] transition"
+                    >
+                      Enquire Now
+                    </button>
+                    <button
+                      type="button"
+                      className="py-2 px-6 rounded-3xl text-white border border-white  hover:bg-white hover:text-[#23284a] transition"
+                    >
+                      Visit E-showroom
+                    </button>
+                  </>
+                )}
               </div>
               {/* Mobile Menu Button */}
 
@@ -278,20 +304,24 @@ const Layout = ({ children }: LayoutProps) => {
                       <span>Cart ({cartItemCount})</span>
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    className="py-2 px-6 rounded-3xl text-white bg-[#2563eb] font-semibold hover:bg-[#1d4ed8] transition"
-                    onClick={toggleMenu}
-                  >
-                    Enquire Now
-                  </button>
-                  <button
-                    type="button"
-                    className="py-2 px-6 rounded-3xl text-white border border-white font-semibold hover:bg-white hover:text-[#23284a] transition"
-                    onClick={toggleMenu}
-                  >
-                    Visit E-showroom
-                  </button>
+                  {router.pathname.startsWith('/products/') && (
+                    <>
+                      <button
+                        type="button"
+                        className="py-2 px-6 rounded-3xl text-white bg-[#2563eb] font-semibold hover:bg-[#1d4ed8] transition"
+                        onClick={toggleMenu}
+                      >
+                        Enquire Now
+                      </button>
+                      <button
+                        type="button"
+                        className="py-2 px-6 rounded-3xl text-white border border-white font-semibold hover:bg-white hover:text-[#23284a] transition"
+                        onClick={toggleMenu}
+                      >
+                        Visit E-showroom
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -310,31 +340,42 @@ const Layout = ({ children }: LayoutProps) => {
                     <X size={20} />
                   </button>
                 </div>
-                
-                {cartItems.length > 0 ? (
+
+                {cartItems?.length > 0 ? (
                   <>
                     <div className="max-h-[50vh] overflow-y-auto">
-                      {cartItems.map((item) => (
+                      {cartItems?.map((item) => (
                         <div key={item.ID} className="flex items-center gap-3 py-3 border-b">
                           <div className="flex-1">
-                            <h4 className="text-sm font-medium text-gray-800">{item.Product?.Name}</h4>
+                            <h4 className="text-sm font-medium text-gray-800">
+                              {item.Product?.Name}
+                            </h4>
                             <p className="text-sm text-gray-600">Qty: {item.Quantity}</p>
                           </div>
                           <p className="text-sm font-medium text-gray-800">₹{item.UnitPrice}</p>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 pt-4 border-t">
+                    <div className="mt-4 pt-4 ">
                       <div className="flex justify-between mb-4">
                         <span className="font-medium text-gray-800">Total:</span>
                         <span className="font-bold text-gray-800">₹{cartTotal}</span>
                       </div>
-                      <button
-                        onClick={handleCheckout}
-                        className="w-full py-3 px-4 bg-[#2563eb] text-white rounded-lg hover:bg-[#1d4ed8] transition font-semibold"
-                      >
-                        Checkout
-                      </button>
+                      <div className="flex justify-end w-full">
+                        <Link
+                          href={'/checkout'}
+                          className="py-3 px-4 bg-[#2563eb] text-white rounded-lg hover:bg-[#1d4ed8] transition font-semibold"
+                        >
+                          Checkout
+                        </Link>
+                        <button
+                          onClick={handleClearCart}
+                          className="px-4 text-red-500 text-sm rounded-lg  flex items-center justify-center gap-1"
+                        >
+                          <Trash2 size={18} color="red" />
+                          Clear Cart
+                        </button>
+                      </div>
                     </div>
                   </>
                 ) : (
@@ -346,7 +387,11 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
         {/* <div className="h-[72px]"></div> */}
         <Breadcrumb />
-        <main>{children}</main>
+        <main className="flex-grow">{children}</main>
+        <footer className="mt-auto">
+          <FooterNav />
+          <Footer />
+        </footer>
       </div>
     </>
   )

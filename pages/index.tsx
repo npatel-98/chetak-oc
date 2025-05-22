@@ -9,8 +9,11 @@ const Home: FunctionComponent = () => {
   return (
     <>
       <main className={styles.main}>
-        <div className="banner h-screen w-full relative flex  justify-center">
-          <ImageHelper url="	https://cdn.bajajauto.com/-/media/assets/bajajauto/bikes/pulsar-k-2024/hero-banner/web-banner.webp" pictureClasses='w-full' />
+        <div className="banner w-full relative flex  justify-center">
+          <ImageHelper
+            url="	https://cdn.bajajauto.com/-/media/assets/bajajauto/bikes/pulsar-k-2024/hero-banner/web-banner.webp"
+            pictureClasses="w-full"
+          />
         </div>
 
         {/* {user && user !== undefined && (

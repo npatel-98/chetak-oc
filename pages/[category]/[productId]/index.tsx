@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { FunctionComponent } from 'react'
-import OcProductDetail from '../../../ordercloud/components/OcProductDetail'
 import { useOcSelector } from '../../../ordercloud/redux/ocStore'
+import OcProductDetail from '../../../ordercloud/components/OcProductDetail'
 
 const ProductPage: FunctionComponent = () => {
   const { isReady, query } = useRouter()
@@ -16,11 +16,11 @@ const ProductPage: FunctionComponent = () => {
   // }
 
   return (
-    <div className="productBackgroundWrapper relative h-screen ">
+    <div className="productBackgroundWrapper relative">
       <Head>
         <title>{productName}</title>
       </Head>
-      {isReady ? <OcProductDetail productId={query.productid as string} /> : <h1>Loading</h1>}
+      {isReady ? <OcProductDetail productId={query.productId as string} /> : <h1>Loading</h1>}
     </div>
   )
 }
