@@ -1,34 +1,41 @@
 import { FunctionComponent, useState } from 'react'
-import { OcCurrentOrderState } from '../../redux/ocCurrentOrder'
+// import { OcCurrentOrderState } from '../../redux/ocCurrentOrder'
 import OcCheckoutBilling from './OcCheckoutBilling'
 import OcCheckoutPayment from './OcCheckoutPayment'
 import OcCheckoutReview from './OcCheckoutReview'
 import OcCheckoutShipping from './OcCheckoutShipping'
-import OcCheckoutSummary from './OcCheckoutSummary'
+// import OcCheckoutSummary from './OcCheckoutSummary'
 
 export interface OcCheckoutStepProps {
   onNext: () => void
   onPrev: () => void
 }
 
-const OcCheckout: FunctionComponent<{ onSubmitted: any }> = ({ onSubmitted }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const OcCheckout: FunctionComponent<{ onSubmitted: any; setCheckoutStep: any }> = ({
+  onSubmitted,
+  setCheckoutStep,
+}) => {
   const [step, setStep] = useState(0)
 
   const handlePrevClick = () => {
     setStep((s) => s - 1)
+    setCheckoutStep((s) => s - 1)
   }
 
   const handleNextClick = () => {
     setStep((s) => s + 1)
+    setCheckoutStep((s) => s + 1)
   }
 
   const handleOrderSubmitted = (orderId: string) => {
     onSubmitted(orderId)
+    setCheckoutStep(0)
     setStep(0)
   }
 
   return (
-    <div>
+    <div className="w-full">
       {step === 0 && <OcCheckoutShipping onPrev={handlePrevClick} onNext={handleNextClick} />}
       {step === 1 && <OcCheckoutBilling onPrev={handlePrevClick} onNext={handleNextClick} />}
       {step === 2 && <OcCheckoutPayment onPrev={handlePrevClick} onNext={handleNextClick} />}

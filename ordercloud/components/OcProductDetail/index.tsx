@@ -77,7 +77,7 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({ productId })
             {/* Right Column: Price and Details */}
             <div className="md:col-span-5 p-3 z-20">
               {/* Add the "Pulsar NS125 price starting from" text */}
-              <p className="text-sm mb-2">Pulsar NS125 price starting from</p>
+              <p className="text-sm mb-2">{product?.Name} price starting from</p>
               <p className="text-lg font-semibold pb-4 lg:pb-2 ">
                 {formatPrice(product.PriceSchedule?.PriceBreaks[0].Price)}
               </p>
@@ -166,6 +166,40 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({ productId })
                   <span>{product.xp.SafeBraking}</span>
                 </div>
               )}
+
+              {product?.xp?.Gradeability && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Gradeability</span>
+                  <span>{product.xp.Gradeability}</span>
+                </div>
+              )}
+
+              {product?.xp?.Variant && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Variant</span>
+                  <span>{product.xp.Variant}</span>
+                </div>
+              )}
+
+              {product?.xp?.TopSpeed && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Top Speed</span>
+                  <span>{product.xp.TopSpeed}</span>
+                </div>
+              )}
+
+              {product?.xp?.DriveModes && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">Drive Modes</span>
+                  <span>{product.xp.DriveModes}</span>
+                </div>
+              )}
+              {product?.xp?.CertifiedRange && (
+                <div className="flex flex-col border-l-2 border-sky-500 pl-4">
+                  <span className="font-bold">SCertified Range</span>
+                  <span>{product.xp.CertifiedRange}</span>
+                </div>
+              )}
             </div>
             {(product?.xp?.Images?.[0]?.Url || product?.xp?.Images?.[1]?.Url) && (
               <div className="flex justify-center scale-x-[-1]">
@@ -182,7 +216,7 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({ productId })
       {/** Image gallery section*/}
       {product?.xp?.GalleryImages && product?.xp?.GalleryImages.length > 0 && (
         <div className="imageGallery flex flex-col  bg-[#E5E5E5] pt-10 pl-10 pb-[60px]">
-          <h2 className="text-2xl lg:text-[48px] font-bold">Pulsar NS125 Gallery</h2>
+          <h2 className="text-2xl lg:text-[48px] font-bold">{product?.Name} Gallery</h2>
           <div className="mt-8 flex space-x-4 w-full overflow-x-scroll">
             {product.xp.GalleryImages.map((image: GalleryImage, index: number) => (
               <div key={index} className="w-[300px] lg:w-[400px]">

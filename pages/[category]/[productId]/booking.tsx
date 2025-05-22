@@ -3,11 +3,11 @@ import { useRouter } from 'next/router'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { User, Phone, MapPin, Store, Calendar } from 'lucide-react'
-import useOcProductDetail from '../../../ordercloud/hooks/useOcProductDetail'
-import ImageHelper from '../../../helper/Image'
-import useOcCart from '../../../ordercloud/redux/useOcCart'
 import { useState } from 'react'
 import Link from 'next/link'
+import useOcProductDetail from '../../../ordercloud/hooks/useOcProductDetail'
+import useOcCart from '../../../ordercloud/redux/useOcCart'
+import ImageHelper from '../../../helper/Image'
 
 // Validation schema
 const validationSchema = Yup.object({
@@ -22,13 +22,12 @@ const validationSchema = Yup.object({
 
 export default function ProductBookingPage() {
   const router = useRouter()
-  const { productid } = router.query
-  const { product } = useOcProductDetail(productid as string)
-  const [isBooked, setIsBooked]=useState(false)
-  const { addToCart }= useOcCart()
-  
+  const { productId } = router.query
+  const { product } = useOcProductDetail(productId as string)
+  const [isBooked, setIsBooked] = useState(false)
+  const { addToCart } = useOcCart()
 
-//   console.log('@@productId', productid)
+  //   console.log('@@productId', productid)
 
   // Mock data - replace with your actual data
   const dealers = [
@@ -40,18 +39,16 @@ export default function ProductBookingPage() {
 
   const buyingOptions = ['Within 1 month', 'Within 3 months', 'Within 6 months', 'Just exploring']
 
- 
-
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       console.log('Form submitted:', values)
-     await addToCart({productId:product?.ID,quantity:1})
+      await addToCart({ productId: product?.ID, quantity: 1 })
       setIsBooked(true)
-    //   console.log("@@res",res)
+      //   console.log("@@res",res)
 
       // Simulate API call
 
-    //   router.push(`/products/${productid}`)
+      //   router.push(`/products/${productid}`)
     } catch (error) {
       console.error('Submission error:', error)
     } finally {
@@ -59,7 +56,7 @@ export default function ProductBookingPage() {
     }
   }
 
-  if ( !product) return null
+  if (!product) return null
 
   return (
     <div className="inset-0 bg-black bg-opacity-20 flex items-center justify-center p-4 z-50 h-screen">
@@ -259,15 +256,15 @@ export default function ProductBookingPage() {
                   >
                     {isSubmitting ? 'Submitting...' : 'Book Now'}
                   </button>
-                  {isBooked &&
-                  <Link
-                    type="submit"
-                    href={'/checkout'}
-                    className="w-full h-12  px-4 bg-[#2563eb] flex justify-center items-center text-white rounded-lg hover:bg-[#1d4ed8] transition text-white font-semibold text-base"
-                  >
-                    Checkout Now
-                  </Link>
-                }
+                  {isBooked && (
+                    <Link
+                      type="submit"
+                      href={'/checkout'}
+                      className="w-full h-12  px-4 bg-[#2563eb] flex justify-center items-center text-white rounded-lg hover:bg-[#1d4ed8] transition text-white font-semibold text-base"
+                    >
+                      Checkout Now
+                    </Link>
+                  )}
                 </div>
               </Form>
             )}

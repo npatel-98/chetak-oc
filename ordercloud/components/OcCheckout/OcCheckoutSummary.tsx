@@ -17,41 +17,58 @@ const OcCheckoutSummary: FunctionComponent = () => {
     return order && order.BillingAddress && isShippingAccurate
   }, [order, isShippingAccurate])
 
-  return order ? (
-    <table>
-      <tbody>
-        <tr>
-          <th>Subtotal</th>
-          <td>{formatPrice(order.Subtotal)}</td>
-        </tr>
+  if (!order) return null
+
+  return (
+    <div className="w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800">Order Summary</h2>
+      <div className="space-y-3">
+        <div className="flex justify-between items-center text-gray-600">
+          <span className="text-sm md:text-base">Subtotal</span>
+          <span className="text-sm md:text-base font-medium">{formatPrice(order.Subtotal)}</span>
+        </div>
+
         {order.PromotionDiscount ? (
-          <tr>
-            <th>Promotion</th>
-            <td>{formatPrice(-order.PromotionDiscount)}</td>
-          </tr>
+          <div className="flex justify-between items-center text-green-600">
+            <span className="text-sm md:text-base">Promotion</span>
+            <span className="text-sm md:text-base font-medium">
+              -{formatPrice(order.PromotionDiscount)}
+            </span>
+          </div>
         ) : null}
-        <tr>
-          <th>Shipping</th>
-          <td>{isShippingAccurate ? formatPrice(order.ShippingCost) : '---'}</td>
-        </tr>
-        <tr>
-          <th>Tax</th>
-          <td>{isTaxAccurate ? formatPrice(order.TaxCost) : '---'}</td>
-        </tr>
-        <tr>
-          <th>Total</th>
-          <td>{formatPrice(order.Total)}</td>
-        </tr>
-        {payments &&
-          payments.map((p) => (
-            <tr key={p.ID}>
-              <th>{`${p.Type} Payment`}</th>
-              <td>{formatPrice(-p.Amount)}</td>
-            </tr>
-          ))}
-      </tbody>
-    </table>
-  ) : null
+
+        <div className="flex justify-between items-center text-gray-600">
+          <span className="text-sm md:text-base">Shipping</span>
+          <span className="text-sm md:text-base font-medium">
+            {isShippingAccurate ? formatPrice(order.ShippingCost) : '---'}
+          </span>
+        </div>
+
+        <div className="flex justify-between items-center text-gray-600">
+          <span className="text-sm md:text-base">Tax</span>
+          <span className="text-sm md:text-base font-medium">
+            {isTaxAccurate ? formatPrice(order.TaxCost) : '---'}
+          </span>
+        </div>
+
+        {payments?.map((p) => (
+          <div key={p.ID} className="flex justify-between items-center text-gray-600">
+            <span className="text-sm md:text-base">{`${p.Type} Payment`}</span>
+            <span className="text-sm md:text-base font-medium">-{formatPrice(p.Amount)}</span>
+          </div>
+        ))}
+
+        <div className="border-t border-gray-200 my-3"></div>
+
+        <div className="flex justify-between items-center">
+          <span className="text-base md:text-lg font-semibold text-gray-800">Total</span>
+          <span className="text-base md:text-lg font-bold text-gray-900">
+            {formatPrice(order.Total)}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default OcCheckoutSummary

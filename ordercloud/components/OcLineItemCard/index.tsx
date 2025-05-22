@@ -40,7 +40,7 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
   }, [lineItem, disabled, quantity])
 
   return (
-    <div className="cartWrapper">
+    <div className="cartWrapper w-full">
       <div className="productTitle flex justify-between items-base">
         <p className="">
           {lineItem.Product.Name}
@@ -53,14 +53,7 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
         </p>
         <div className="ctaActionWrapper flex gap-4">
           {editable && (
-            <Link href={`/products/${lineItem.ProductID}?lineitem=${lineItem.ID}`}>
-              <a
-                aria-label="Edit Line Item"
-                className="py-2 px-8 rounded-3xl text-[#322b54] bg-[#47bcc8]"
-              >
-                Edit
-              </a>
-            </Link>
+            <Link href={`/products/${lineItem.ProductID}?lineitem=${lineItem.ID}`}>Edit</Link>
           )}
 
           {editable && (
@@ -79,10 +72,10 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
 
       <div className="productDetails md:flex md:justify-start">
         <div className="imgWrapper md:mr-4 md:w-1/4">
-          {product?.xp?.ImageUrl && (
+          {product?.xp?.Images?.[0]?.Url && (
             <Image
               alt={product?.Name}
-              src={product?.xp?.ImageUrl}
+              src={product?.xp?.Images?.[0]?.Url}
               width={150}
               height={150}
               className="object-cover"

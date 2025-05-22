@@ -4,6 +4,7 @@ import useOcProductList from '../../hooks/useOcProductList'
 import { OcProductListOptions } from '../../redux/ocProductList'
 import Link from 'next/dist/client/link'
 import ImageHelper from '../../../helper/Image'
+import { useRouter } from 'next/router'
 export interface OcProductListProps {
   options?: OcProductListOptions
   renderItem?: (product: BuyerProduct) => JSX.Element
@@ -11,6 +12,8 @@ export interface OcProductListProps {
 
 const OcProductList: FunctionComponent<OcProductListProps> = ({ options }) => {
   const products = useOcProductList(options)
+  const router = useRouter()
+  console.log('@@router', router?.asPath)
 
   return (
     <>
@@ -58,17 +61,17 @@ const OcProductList: FunctionComponent<OcProductListProps> = ({ options }) => {
           ))}
         </ol>
       ) : (
-        <ol className="my-10 grid gap-6 container mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <ol className="my-10 grid gap-6 container mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch">
           {products &&
             products.map((p) => (
-              <Link key={p.ID} href={`/products/${p.ID}`} className="block">
-                <li className="">
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col  items-center p-6">
+              <Link key={p.ID} href={`${router?.asPath}/${p.ID}`} className="block">
+                <li className="h-full">
+                  <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col  items-center p-6 h-full">
                     {/* Left: Image */}
                     <div className="flex-1 flex flex-col items-center md:items-start ">
                       {/* Product Image */}
                       <div className="mb-4 md:mb-0">
-                        <ImageHelper url={p?.xp?.Images?.[0]?.Url} className=" w-64 h-40" />
+                        <ImageHelper url={p?.xp?.Images?.[0]?.Url} className="!object-cover " />
                       </div>
                     </div>
                     {/* Right: Details */}
@@ -105,7 +108,7 @@ const OcProductList: FunctionComponent<OcProductListProps> = ({ options }) => {
                       {/* Buttons */}
                       <div className="flex flex-col md:flex-row gap-4">
                         <Link
-                          href={`/products/${p?.ID}/booking`}
+                          href={`${router?.asPath}/${p?.ID}/booking`}
                           className="bg-[#2563eb] text-white font-semibold py-3 rounded-full w-full text-center  transition hover:bg-[#1d4ed8]"
                         >
                           BOOK NOW
