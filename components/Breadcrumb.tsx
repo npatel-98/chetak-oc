@@ -10,6 +10,7 @@ const poppins = Poppins({
 const Breadcrumb = () => {
   const router = useRouter()
   const pathSegments = router.asPath.split('/').filter((segment) => segment)
+  const isBookingPage = router.asPath.includes('/booking')
 
   // Don't show breadcrumb on home page
   if (pathSegments.length === 0) return null
@@ -29,7 +30,7 @@ const Breadcrumb = () => {
   })
 
   return (
-    <div className={`${poppins.className} bg-gray-50 py-3`}>
+    <div className={`${poppins.className} bg-gray-50 py-3 ${isBookingPage ? 'hidden md:block' : ''}`}>
       <div className="container mx-auto px-4">
         <nav className="flex" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">

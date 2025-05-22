@@ -72,7 +72,7 @@ const Layout = ({ children }: LayoutProps) => {
                 : 'py-3 bg-[#23284a]'
             }`}
           >
-            <div className="header__wrapper flex items-center justify-between container mx-auto px-4">
+            <div className="header__wrapper flex items-center justify-between px-8">
               <div className="flex items-center gap-12">
                 <Link href="/">
                   <div className="cursor-pointer">
@@ -86,14 +86,14 @@ const Layout = ({ children }: LayoutProps) => {
                 <nav className="hidden lg:block">
                   <ul className="flex gap-10 items-center text-white">
                     <li>
-                      <Link href="/products" className="!text-white font-semibold hover:underline">
+                      <Link href="/products" className="!text-white text-sm  hover:underline">
                         Motorcycles
                       </Link>
                     </li>
                     <li>
                       <Link
                         href="/three-wheelers"
-                        className="!text-white font-semibold hover:underline"
+                        className="!text-white text-sm  hover:underline"
                       >
                         3 Wheelers & Qute
                       </Link>
@@ -101,7 +101,7 @@ const Layout = ({ children }: LayoutProps) => {
                     <li>
                       <Link
                         href="/shareholders"
-                        className="!text-white font-semibold hover:underline"
+                        className="!text-white text-sm  hover:underline"
                       >
                         Shareholders
                       </Link>
@@ -113,13 +113,13 @@ const Layout = ({ children }: LayoutProps) => {
               <div className="hidden lg:flex gap-4 items-center">
                 <button
                   type="button"
-                  className="py-2 px-6 rounded-3xl text-white bg-[#2563eb] font-semibold hover:bg-[#1d4ed8] transition"
+                  className="py-2 px-6 rounded-3xl text-white bg-[#2563eb]  hover:bg-[#1d4ed8] transition"
                 >
                   Enquire Now
                 </button>
                 <button
                   type="button"
-                  className="py-2 px-6 rounded-3xl text-white border border-white font-semibold hover:bg-white hover:text-[#23284a] transition"
+                  className="py-2 px-6 rounded-3xl text-white border border-white  hover:bg-white hover:text-[#23284a] transition"
                 >
                   Visit E-showroom
                 </button>
@@ -203,7 +203,7 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
           </div>
         </div>
-        <div className="h-[72px]"></div>
+        {/* <div className="h-[72px]"></div> */}
         <Breadcrumb />
         <main>{children}</main>
       </div>
