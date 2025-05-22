@@ -5,6 +5,9 @@ import * as Yup from 'yup'
 import { User, Phone, MapPin, Store, Calendar } from 'lucide-react'
 import useOcProductDetail from '../../../ordercloud/hooks/useOcProductDetail'
 import ImageHelper from '../../../helper/Image'
+import useOcCart from '../../../ordercloud/redux/useOcCart'
+import { useState } from 'react'
+import Link from 'next/link'
 
 // Validation schema
 const validationSchema = Yup.object({
@@ -21,6 +24,8 @@ export default function ProductBookingPage() {
   const router = useRouter()
   const { productid } = router.query
   const { product } = useOcProductDetail(productid as string)
+  const [isBooked, setIsBooked]=useState(false)
+  const { addToCart }= useOcCart()
   
 
   console.log('@@productId', productid)
@@ -40,10 +45,13 @@ export default function ProductBookingPage() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       console.log('Form submitted:', values)
+      const res = await addToCart({productId:product?.ID,quantity:1})
+      setIsBooked(true)
+      console.log("@@res",res)
+
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      alert('Enquiry submitted successfully! We will call you back soon.')
-      router.push(`/products/${productid}`)
+
+    //   router.push(`/products/${productid}`)
     } catch (error) {
       console.error('Submission error:', error)
     } finally {
@@ -77,7 +85,7 @@ export default function ProductBookingPage() {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800 text-base lg:text-lg">{product.Name}</h3>
-                <p className="text-sm text-gray-500">Book  today</p>
+                <p className="text-sm text-gray-500">Book today</p>
               </div>
             </div>
           </div>
@@ -242,14 +250,25 @@ export default function ProductBookingPage() {
                   </div>
                 </div>
 
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] disabled:bg-[#93c5fd] text-white font-semibold h-12 rounded-lg transition-colors duration-200 mt-6 text-base"
-                >
-                  {isSubmitting ? 'Submitting...' : 'Book Now'}
-                </button>
+                <div className="flex items-center mt-6 gap-10">
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || isBooked}
+                    className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] disabled:bg-[#93c5fd] text-white font-semibold h-12 rounded-lg transition-colors duration-200  text-base"
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Book Now'}
+                  </button>
+                  {isBooked &&
+                  <Link
+                    type="submit"
+                    href={'/checkout'}
+                    className="w-full h-12  px-4 bg-[#2563eb] flex justify-center items-center text-white rounded-lg hover:bg-[#1d4ed8] transition text-white font-semibold text-base"
+                  >
+                    Checkout Now
+                  </Link>
+                }
+                </div>
               </Form>
             )}
           </Formik>

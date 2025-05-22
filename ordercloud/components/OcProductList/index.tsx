@@ -106,7 +106,7 @@ const OcProductList: FunctionComponent<OcProductListProps> = ({ options }) => {
                       <div className="flex flex-col md:flex-row gap-4">
                         <Link
                           href={`/products/${p?.ID}/booking`}
-                          className="bg-[#2563eb] text-white font-semibold py-3 rounded-full w-full  transition hover:bg-[#1d4ed8]"
+                          className="bg-[#2563eb] text-white font-semibold py-3 rounded-full w-full text-center  transition hover:bg-[#1d4ed8]"
                         >
                           BOOK NOW
                         </Link>
