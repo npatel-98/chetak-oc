@@ -1,11 +1,7 @@
-import Link from 'next/link'
+import { FunctionComponent } from 'react'
 import { LineItem } from 'ordercloud-javascript-sdk'
-import { FormEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import useOcProduct from '../../hooks/useOcProduct'
-import { removeLineItem, updateLineItem } from '../../redux/ocCurrentOrder'
-import OcQuantityInput from '../OcQuantityInput'
 import Image from 'next/image'
+import { Trash2 } from 'lucide-react'
 
 interface OcLineItemCardProps {
   lineItem: LineItem
@@ -13,103 +9,40 @@ interface OcLineItemCardProps {
 }
 
 const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, editable }) => {
-  const dispatch = useDispatch()
-  const [disabled, setDisabled] = useState(false)
-  const [quantity, setQuantity] = useState(lineItem.Quantity)
-
-  const product = useOcProduct(lineItem.ProductID)
-
-  const handleRemoveLineItem = useCallback(async () => {
-    setDisabled(true)
-    await dispatch(removeLineItem(lineItem.ID))
-    setDisabled(false)
-  }, [dispatch, lineItem])
-
-  const handleUpdateLineItem = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault()
-      setDisabled(true)
-      await dispatch(updateLineItem({ ...lineItem, Quantity: quantity }))
-      setDisabled(false)
-    },
-    [dispatch, quantity, lineItem]
-  )
-
-  const isUpdateDisabled = useMemo(() => {
-    return disabled || lineItem.Quantity === quantity
-  }, [lineItem, disabled, quantity])
-
   return (
-    <div className="cartWrapper w-full">
-      <div className="productTitle flex justify-between items-base">
-        <p className="">
-          {lineItem.Product.Name}
-          {lineItem.Specs.map((s) => (
-            <span key={s.SpecID}>
-              <br />
-              {`${s.Name}: ${s.Value}`}
-            </span>
-          ))}
-        </p>
-        <div className="ctaActionWrapper flex gap-4">
-          {editable && (
-            <Link href={`/products/${lineItem.ProductID}?lineitem=${lineItem.ID}`}>Edit</Link>
-          )}
+    <div className="flex items-center gap-6">
+      <div className="relative h-24 w-24 flex-shrink-0">
+        <Image
+          src={lineItem.Product?.xp?.Images?.[0]?.Url || '/images/placeholder.jpg'}
+          alt={lineItem.Product?.Name || 'Product image'}
+          fill
+          className="object-cover rounded-lg"
+        />
+      </div>
+
+      <div className="flex-grow">
+        <h3 className="text-lg font-semibold text-gray-800 mb-1">{lineItem.Product?.Name}</h3>
+        <p className="text-gray-500 text-sm mb-2">{lineItem.Product?.Description}</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600">Quantity:</span>
+              <div className="px-3 py-1 bg-gray-100 rounded-md text-gray-700">
+                {lineItem.Quantity}
+              </div>
+            </div>
+            <div className="text-[#2563eb] font-bold">₹{lineItem.LineTotal}</div>
+          </div>
 
           {editable && (
             <button
-              aria-label="Remove Line Item"
-              type="button"
-              disabled={disabled}
-              onClick={handleRemoveLineItem}
-              className="py-2 px-8 rounded-3xl text-[#322b54] bg-[#ffa9a9]"
+              className="p-2 text-red-500 hover:text-red-600 transition-colors duration-200"
+              aria-label="Remove item"
             >
-              Remove
+              <Trash2 className="w-5 h-5" />
             </button>
           )}
         </div>
-      </div>
-
-      <div className="productDetails md:flex md:justify-start">
-        <div className="imgWrapper md:mr-4 md:w-1/4">
-          {product?.xp?.Images?.[0]?.Url && (
-            <Image
-              alt={product?.Name}
-              src={product?.xp?.Images?.[0]?.Url}
-              width={150}
-              height={150}
-              className="object-cover"
-            />
-          )}
-        </div>
-
-        {editable ? (
-          <>
-            {product && (
-              <form onSubmit={handleUpdateLineItem} className="w-full">
-                <div className="h-full flex justify-between items-baseline md:items-center md:flex-auto mx-2">
-                  <OcQuantityInput
-                    controlId={`${lineItem.ID}_quantity`}
-                    quantity={quantity}
-                    disabled={disabled}
-                    onChange={setQuantity}
-                    priceSchedule={product.PriceSchedule}
-                  />
-                  <button
-                    type="submit"
-                    aria-label="Update Line Item Quantity"
-                    disabled={isUpdateDisabled}
-                    className="py-2 px-8 rounded-3xl text-[#322b54] bg-[#47bcc8]"
-                  >
-                    Update
-                  </button>
-                </div>
-              </form>
-            )}
-          </>
-        ) : (
-          <p>{`Quantity: ${lineItem.Quantity}`}</p>
-        )}
       </div>
     </div>
   )
