@@ -3,5 +3,7 @@ export default function formatPrice(amount: number): string {
     style: 'currency',
     currency: 'INR',
     currencyDisplay: 'symbol',
+    trailingZeroDisplay: 'auto',
+    roundingIncrement: 10,
   }).format(amount)
 }
