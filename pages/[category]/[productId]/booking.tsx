@@ -65,10 +65,8 @@ export default function ProductBookingPage() {
         <div className="p-4 lg:p-8 border-b relative">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-blue-600 mb-2">Enquire Now</h2>
-              <p className="text-gray-600 text-sm lg:text-base">
-                Fill in the data to get a callback
-              </p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-blue-600 mb-2">Book Now</h2>
+              <p className="text-gray-600 text-sm lg:text-base">Fill in the data</p>
             </div>
 
             {/* Product Info */}

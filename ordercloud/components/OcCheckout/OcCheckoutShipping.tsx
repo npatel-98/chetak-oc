@@ -8,8 +8,9 @@ import OcShipEstimates from './OcShipEstimates'
 import { OcCheckoutStepProps } from './index'
 import { saveShippingAddress } from '../../redux/ocCurrentOrder'
 
-const OcCheckoutShipping: FunctionComponent<OcCheckoutStepProps> = ({ onNext, }) => {
+const OcCheckoutShipping: FunctionComponent<OcCheckoutStepProps> = ({ onNext }) => {
   const dispatch = useOcDispatch()
+  // const [isButtonDisabled, setIsButtonDisabled] = useState(true)
 
   const { initialized, order, lineItems } = useOcSelector((s) => ({
     initialized: s.ocCurrentOrder.initialized,
@@ -19,7 +20,6 @@ const OcCheckoutShipping: FunctionComponent<OcCheckoutStepProps> = ({ onNext, })
   }))
 
   const handleSetShippingAddress = (address: Partial<BuyerAddress>) => {
-    console.log('@@address', address)
     dispatch(saveShippingAddress(address))
   }
 
@@ -45,19 +45,22 @@ const OcCheckoutShipping: FunctionComponent<OcCheckoutStepProps> = ({ onNext, })
           onChange={handleSetShippingAddress}
         />
       ) : ( */}
-        <OcAddressForm
-          id="shipping"
-          address={currentShippingAddress}
-          onSubmit={handleSetShippingAddress}
-        />
+      <OcAddressForm
+        id="shipping"
+        address={currentShippingAddress}
+        onSubmit={handleSetShippingAddress}
+        // setIsButtonDisabled={setIsButtonDisabled}
+        onSuccess={onNext}
+      />
       {/* )} */}
       <OcShipEstimates />
       <hr />
-      <div className="flex justify-end mt-6">
+      {/* <div className="flex justify-end mt-6">
         <button
           type="button"
           onClick={onNext}
-          className="flex items-center gap-2 px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md"
+          disabled={isButtonDisabled}
+          className="flex items-center gap-2 px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md disabled:bg-blue-300 disabled:cursor-not-allowed"
         >
           <span>Continue to Billing</span>
           <svg
@@ -73,7 +76,7 @@ const OcCheckoutShipping: FunctionComponent<OcCheckoutStepProps> = ({ onNext, })
             />
           </svg>
         </button>
-      </div>
+      </div> */}
     </div>
   ) : null
 }

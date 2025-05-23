@@ -39,6 +39,7 @@ const OcCheckoutBilling: FunctionComponent<OcCheckoutStepProps> = ({ onNext, onP
 
   const handleSetBillingAddress = (address: Partial<BuyerAddress>) => {
     dispatch(saveBillingAddress(address))
+    return true
   }
 
   // const handleSameAsShippingChange = useCallback(
@@ -78,6 +79,8 @@ const OcCheckoutBilling: FunctionComponent<OcCheckoutStepProps> = ({ onNext, onP
           id="billing"
           address={currentBillingAddress}
           onSubmit={handleSetBillingAddress}
+          // setIsButtonDisabled={setIsButtonDisabled}
+          onSuccess={onNext}
         />
       </div>
 
@@ -90,13 +93,6 @@ const OcCheckoutBilling: FunctionComponent<OcCheckoutStepProps> = ({ onNext, onP
           className="flex-1 px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 font-medium"
         >
           Back to Shipping
-        </button>
-        <button
-          type="button"
-          onClick={onNext}
-          className="flex-1 px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 font-medium"
-        >
-          Continue to Payment
         </button>
       </div>
     </div>

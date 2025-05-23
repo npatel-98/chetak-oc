@@ -32,7 +32,7 @@ const OcLineItemList: FunctionComponent<OcLineItemListProps> = ({ emptyMessage, 
         Looks like you haven't added any items to your cart yet.
       </p>
       <Link
-        href="/products"
+        href="/motorcycles"
         className="px-6 py-3 bg-[#2563eb] text-white rounded-lg hover:bg-[#1d4ed8] transition-colors duration-300 shadow-md hover:shadow-lg"
       >
         Start Shopping
