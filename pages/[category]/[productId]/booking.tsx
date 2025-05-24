@@ -86,14 +86,11 @@ export default function ProductBookingPage() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log('Form submitted:', values)
-      await addToCart({ productId: product?.ID, quantity: 1, specs: variants?.[0]?.Specs })
-      setIsBooked(false)
-      //   console.log("@@res",res)
+      // console.log('Form submitted:', values)
+      const xp = { ...values, selectedModel: selectedModel, selectedColor: selectedColor }
+      await addToCart({ productId: product?.ID, quantity: 1, specs: variants?.[0]?.Specs, xp })
 
-      // Simulate API call
-
-      //   router.push(`/products/${productid}`)
+      router.push(`/checkout`)
     } catch (error) {
       console.error('Submission error:', error)
     } finally {

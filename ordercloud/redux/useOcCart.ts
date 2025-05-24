@@ -58,10 +58,13 @@ const useOcCart = () => {
     productId,
     quantity,
     specs,
+    xp,
   }: {
     productId: string
     quantity: number
     specs: LineItemSpec[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    xp: any
   }): Promise<CartResponse | null> => {
     try {
       if (productId && quantity) {
@@ -77,10 +80,10 @@ const useOcCart = () => {
             ...existingLineItem,
             Quantity: quantity + (existingLineItem?.Quantity ?? 0),
           }
-          const res = await dispatch(updateLineItem({ ...updatedLineItem, Specs: specs }))
+          const res = await dispatch(updateLineItem({ ...updatedLineItem, Specs: specs, xp: xp }))
           internalRes = res as CartResponse
         } else {
-          const res = await dispatch(createLineItem({ ...lineItem, Specs: specs }))
+          const res = await dispatch(createLineItem({ ...lineItem, Specs: specs, xp: xp }))
           internalRes = res as CartResponse
         }
         if (internalRes?.payload?.errorCode) {

@@ -20,7 +20,10 @@ const Layout = ({ children }: LayoutProps) => {
     <>
       <Head>
         <title>{'BAJAJ Auto'}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="icon"
+          href="https://cdn.bajajauto.com/-/media/assets/bajajauto/global/bajaj-logo2.png"
+        />
       </Head>
 
       <div className={`${poppins.className} min-h-screen flex flex-col`}>

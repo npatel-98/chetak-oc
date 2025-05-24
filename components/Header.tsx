@@ -11,7 +11,7 @@ import { deleteCurrentOrder } from '../ordercloud/redux/ocCurrentOrder'
 const navigationLinks = [
   { href: '/motorcycles', label: 'Motorcycles' },
   { href: '/threeWheelers', label: '3 Wheelers & Qute' },
-  { href: '/shareholders', label: 'Shareholders' },
+  { href: 'https://www.bajajauto.com/investors/investor-services', label: 'Shareholders' },
 ]
 
 // Cart Item Component
