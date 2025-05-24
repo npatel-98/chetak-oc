@@ -5,6 +5,7 @@ import { OcProductListOptions } from '../../redux/ocProductList'
 import Link from 'next/dist/client/link'
 import ImageHelper from '../../../helper/Image'
 import { useRouter } from 'next/router'
+import formatPrice from '../../utils/formatPrice'
 export interface OcProductListProps {
   options?: OcProductListOptions
   renderItem?: (product: BuyerProduct) => JSX.Element
@@ -13,7 +14,6 @@ export interface OcProductListProps {
 const OcProductList: FunctionComponent<OcProductListProps> = ({ options }) => {
   const products = useOcProductList(options)
   const router = useRouter()
-  console.log('@@router', router?.asPath)
 
   return (
     <>
@@ -84,7 +84,8 @@ const OcProductList: FunctionComponent<OcProductListProps> = ({ options }) => {
                         <div className="font-bold text-xl text-gray-800">{p.Name}</div>
                       </div>
                       <span className="font-medium">
-                        Price Starting from {p?.xp?.SpecialPrice || '133 101'}/- *
+                        Price Starting from{' '}
+                        {formatPrice(p?.PriceSchedule?.PriceBreaks[0].Price) || '133 101'}/- *
                       </span>
                       {/* Specs */}
                       <div className="flex flex-col md:flex-row justify-between gap-4 mb-6 mt-4">

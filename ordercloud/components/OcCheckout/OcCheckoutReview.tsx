@@ -10,7 +10,7 @@ interface OcCheckoutReviewProps extends OcCheckoutStepProps {
 }
 
 const OcCheckoutReview: FunctionComponent<OcCheckoutReviewProps> = ({
-  onPrev,
+  // onPrev,
   onOrderSubmitted,
 }) => {
   const dispatch = useOcDispatch()
@@ -31,13 +31,13 @@ const OcCheckoutReview: FunctionComponent<OcCheckoutReviewProps> = ({
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <button
+        {/* <button
           type="button"
           onClick={onPrev}
           className="w-full sm:w-auto px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200 font-medium"
         >
           ← Edit Payment
-        </button>
+        </button> */}
         <button
           type="button"
           onClick={handleSubmitOrder}
