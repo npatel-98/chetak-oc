@@ -4,10 +4,12 @@ const ImageHelper = ({
   url,
   className,
   pictureClasses,
+  alt,
 }: {
   url: string
   className?: string
   pictureClasses?: string
+  alt?: string
 }) => {
   return (
     <picture className={`block ${pictureClasses}`}>
@@ -19,6 +21,7 @@ const ImageHelper = ({
         loading="lazy"
         width="100%"
         height="100%"
+        alt={alt || 'Image'}
       />
     </picture>
   )

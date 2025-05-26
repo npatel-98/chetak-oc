@@ -2,6 +2,8 @@ import { FunctionComponent } from 'react'
 // import { useOcSelector } from '../ordercloud/redux/ocStore'
 import styles from '../styles/Home.module.css'
 import ImageHelper from '../helper/Image'
+import VehicleCarousel from '../components/VehicleCarousel'
+import FinanceOffers from '../components/FinanaceOffer'
 
 const Home: FunctionComponent = () => {
   // const user = useOcSelector((s) => s.ocUser.user)
@@ -15,6 +17,8 @@ const Home: FunctionComponent = () => {
             pictureClasses="w-full"
           />
         </div>
+        <VehicleCarousel />
+        <FinanceOffers />
 
         {/* {user && user !== undefined && (
           <pre className={styles.code}>
