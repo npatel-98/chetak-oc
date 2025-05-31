@@ -88,6 +88,7 @@ export default function ProductBookingPage() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       // console.log('Form submitted:', values)
+      localStorage.setItem('userEmail', values.email)
       const xp = {
         ...Object.fromEntries(
           Object.entries(values).map(([key, value]) => [
