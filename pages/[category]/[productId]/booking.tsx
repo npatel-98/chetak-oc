@@ -2,7 +2,7 @@
 import { useRouter } from 'next/router'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import { User, Phone, MapPin, Store, Calendar } from 'lucide-react'
+import { User, Phone, MapPin, Store, Calendar, Mail } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import useOcProductDetail from '../../../ordercloud/hooks/useOcProductDetail'
@@ -14,6 +14,7 @@ import { Me } from 'ordercloud-javascript-sdk'
 // Validation schema
 const validationSchema = Yup.object({
   name: Yup.string().min(2, 'Name must be at least 2 characters').required('Name is required'),
+  email: Yup.string().email().required('emil is required'),
   mobile: Yup.string()
     .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits')
     .required('Mobile number is required'),
@@ -87,7 +88,16 @@ export default function ProductBookingPage() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       // console.log('Form submitted:', values)
-      const xp = { ...values, selectedModel: selectedModel, selectedColor: selectedColor }
+      const xp = {
+        ...Object.fromEntries(
+          Object.entries(values).map(([key, value]) => [
+            key,
+            typeof value === 'string' ? value.toLowerCase() : value,
+          ])
+        ),
+        selectedModel: selectedModel?.toLowerCase(),
+        selectedColor: selectedColor?.toLowerCase(),
+      }
       await addToCart({ productId: product?.ID, quantity: 1, specs: variants?.[0]?.Specs, xp })
 
       router.push(`/checkout`)
@@ -143,9 +153,7 @@ export default function ProductBookingPage() {
                       <div
                         key={index}
                         className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
-                          selectedColor === colorData.color
-                            ? 'border-blue-500'
-                            : 'border-transparent'
+                          selectedColor === colorData.color ? 'border-blue-500' : 'border-gray-400'
                         }`}
                         style={{ backgroundColor: colorData.color }}
                         onClick={() => handleColorChange(colorData.color, colorData.Image)}
@@ -192,6 +200,7 @@ export default function ProductBookingPage() {
                 initialValues={{
                   name: '',
                   mobile: '',
+                  email: '',
                   location: '',
                   dealer: '',
                   buyingPlan: '',
@@ -214,7 +223,7 @@ export default function ProductBookingPage() {
                           type="text"
                           id="name"
                           name="name"
-                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:border-blue-600 focus:ring-0 rounded-none"
+                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-0 rounded-none"
                           placeholder="Enter name"
                         />
                       </div>
@@ -235,15 +244,45 @@ export default function ProductBookingPage() {
                           <Phone className="h-5 w-5 text-blue-600" />
                         </div>
                         <Field
-                          type="text"
+                          type="number"
                           id="mobile"
                           name="mobile"
-                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:border-blue-600 focus:ring-0 rounded-none"
+                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-0 rounded-none"
                           placeholder="Enter mobile number"
+                          maxLength={10}
+                          onKeyPress={(e) => {
+                            if (e.target.value.length >= 10) {
+                              e.preventDefault()
+                            }
+                          }}
                         />
                       </div>
                       <ErrorMessage
                         name="mobile"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+
+                    {/* Email Input */}
+                    <div>
+                      <label htmlFor="mobile" className="sr-only">
+                        Enter Email
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Mail className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <Field
+                          type="text"
+                          id="email"
+                          name="email"
+                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-0 rounded-none"
+                          placeholder="Enter Email "
+                        />
+                      </div>
+                      <ErrorMessage
+                        name="email"
                         component="div"
                         className="text-red-500 text-sm mt-1"
                       />
@@ -262,7 +301,7 @@ export default function ProductBookingPage() {
                           type="text"
                           id="location"
                           name="location"
-                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:border-blue-600 focus:ring-0 rounded-none pr-24"
+                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-0 rounded-none pr-24"
                           placeholder='Enter Area "e.g. Andheri"'
                         />
                         <button
@@ -292,7 +331,7 @@ export default function ProductBookingPage() {
                           as="select"
                           id="dealer"
                           name="dealer"
-                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:border-blue-600 focus:ring-0 rounded-none"
+                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-0 rounded-none"
                         >
                           <option value="">Select Dealer</option>
                           {dealers.map((dealer, index) => (
@@ -322,7 +361,7 @@ export default function ProductBookingPage() {
                           as="select"
                           id="buyingPlan"
                           name="buyingPlan"
-                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:border-blue-600 focus:ring-0 rounded-none"
+                          className="w-full text-sm p-2 pl-10 border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-0 rounded-none"
                         >
                           <option value="">Select When you plan to buy</option>
                           {buyingOptions.map((option, index) => (
@@ -345,7 +384,7 @@ export default function ProductBookingPage() {
                       disabled={isSubmitting}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-md transition-colors duration-200 disabled:bg-gray-400"
                     >
-                      {isSubmitting ? 'PROCESSING...' : 'VERIFY AND PAY'}
+                      {isSubmitting ? 'PROCESSING...' : 'VERIFY AND BOOK'}
                     </button>
 
                     {/* T&C and Privacy Policy */}

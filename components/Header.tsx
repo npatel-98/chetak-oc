@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import ImageHelper from '../helper/Image'
-import { ShoppingCart, X, Trash2 } from 'lucide-react'
+import { ShoppingCart, X, Trash2, User } from 'lucide-react'
 import useOcCart from '../ordercloud/redux/useOcCart'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
@@ -228,7 +228,7 @@ const Header = () => {
           </div>
           {/* Desktop Buttons */}
           <div className="hidden lg:flex gap-4 items-center">
-            <div className="relative" ref={cartRef}>
+            <div className="relative flex" ref={cartRef}>
               <button
                 onClick={() => setIsCartOpen(!isCartOpen)}
                 className="relative p-2 text-white hover:bg-white/10 rounded-full transition"
@@ -240,6 +240,12 @@ const Header = () => {
                   </span>
                 )}
               </button>
+              <Link
+                href={'/myOrders'}
+                className="relative p-2 text-white  hover:bg-white/10 rounded-full transition"
+              >
+                <User size={24} />
+              </Link>
 
               {/* Cart Dropdown */}
               {isCartOpen && (
@@ -287,7 +293,7 @@ const Header = () => {
             </nav>
             <div className="flex flex-col gap-4 items-center">
               {/* Mobile Cart */}
-              <div className="w-full px-4">
+              <div className="w-full px-4 ">
                 <button
                   onClick={() => setIsCartOpen(!isCartOpen)}
                   className="w-full flex items-center justify-center gap-2 py-2 px-6 rounded-3xl text-white border border-white hover:bg-white hover:text-[#23284a] transition"
@@ -296,6 +302,15 @@ const Header = () => {
                   <span>Cart ({cartItemCount})</span>
                 </button>
               </div>
+              <Link
+                href={'/myOrders'}
+                onClick={() => {
+                  setIsMenuOpen(false)
+                }}
+                className="relative  py-2 px-6 flex gap-2 rounded-3xl border border-white   font-semibold text-white hover:bg-white/10 rounded-full transition"
+              >
+                My Orders <User size={24} />
+              </Link>
               {showProductButtons && <ProductActionButtons isMobile onButtonClick={toggleMenu} />}
             </div>
           </div>

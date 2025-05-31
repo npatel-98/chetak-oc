@@ -3,6 +3,7 @@ import { FunctionComponent } from 'react'
 // import OcCheckoutBilling from './OcCheckoutBilling'
 // import OcCheckoutPayment from './OcCheckoutPayment'
 import OcCheckoutReview from './OcCheckoutReview'
+import { useRouter } from 'next/router'
 // import OcCheckoutShipping from './OcCheckoutShipping'
 // import OcCheckoutSummary from './OcCheckoutSummary'
 
@@ -16,6 +17,7 @@ const OcCheckout: FunctionComponent<{ onSubmitted: any; setCheckoutStep?: any }>
   onSubmitted,
   setCheckoutStep,
 }) => {
+  const { push } = useRouter()
   // const [_, setStep] = useState(0)
 
   // const handlePrevClick = () => {
@@ -30,7 +32,8 @@ const OcCheckout: FunctionComponent<{ onSubmitted: any; setCheckoutStep?: any }>
 
   const handleOrderSubmitted = (orderId: string) => {
     onSubmitted(orderId)
-    setCheckoutStep(0)
+    push(`/confirmation/${orderId}`)
+    // setCheckoutStep(0)
     // setStep(0)
   }
 

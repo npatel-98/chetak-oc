@@ -1,4 +1,3 @@
-
 import {
   BuyerProduct,
   LineItem,
@@ -137,23 +136,20 @@ export interface OrderPromotionXp {
   OptOut?: string[]
 }
 export interface LineItemXp {
-  TipAmount?: number
-  TipIsRecurring?: boolean
-  Autoship?: boolean
-  DT?: number
-  ListPrice?: number
-  MemberPrice?: number
-  Promotions?: {
-    Pricing: boolean
-    OfferId: string
-    Discount: number
-  }[]
+  model: string
+  location: string
+  color: string
+  bookingAmount: number
+  dealership: string
+  name: string
+  email: string
+  contact: string
 }
 
 export interface ProductXpImage {
-  Name: string
-  Position: number
-  Url: string
+  Name?: string
+  Position?: number
+  Url?: string
 }
 export interface PromoTagXp {
   IgnoreDataAreaId?: boolean
@@ -166,42 +162,49 @@ export interface PromoTagXp {
 }
 
 export interface ProductXp {
-  Autoship?: boolean
-  FirstTimeAutoshipDiscount?: boolean
-  ReccuringAutoshipDiscount?: boolean
-  Brand?: string
-  BrandedColor?: string | null
-  Curbside?: boolean
-  Delivery?: boolean
-  Dimensions?: string | null
-  Flavor?: string[] | null
-  GenericColor?: string[] | null
-  IngredientsComposition?: string | null
-  InStore?: boolean
-  Images?: ProductXpImage[]
-  Video?: string
-  LifeStage?: string[] | null
-  MarketingFlavorName?: string | null
-  RetailMeasure?: string
-  RetailUnit?: string
-  ParentFamilyName?: string
-  ProductMaterial?: string[] | null
-  ProductSize?: string | null
-  ProductType?: string | null
-  UPC?: string
-  USMade?: boolean
-  Bullets?: string[]
-  Features?: string[]
-  InventoryRecordID?: string
-  ProductID?: string
-  Quantity?: number
-  OnSale?: boolean
-  BVRating?: string | number
-  BVReviews?: string | number
-  Path?: string
-  PromoTag?: PromoTagXp[]
-  WE?: boolean | null //WebsiteExcluded
-  VariationAttributes?: string[] | null
+  Range: string
+  TopSpeed: string
+  Charger: string
+  BodyType: string
+  IP67RatedWaterResistance: boolean
+  ChargingTime: string
+  Brakes: string
+  Display: string
+  BatteryCapacity: string
+  Colour: { [key: string]: string }[]
+  Reverse: boolean
+  SelfCancellingBlinker: string
+  AutoHazardLight: boolean
+  CallAcceptReject: boolean
+  HelmetBox: string
+  FrontStorage: string
+  StandardWarranty: string
+  AdditionalRideModes: string[]
+  MusicControl: boolean
+  HillHold: boolean
+  SequentialRearBlinker: boolean
+  GuideMeHomeLights: boolean
+  DisplayThemeChange: boolean
+  AppConnectivity: string
+  Navigation: string
+  RemoteImmobilization: boolean
+  OverSpeedAlert: boolean
+  AccidentDetection: boolean
+  NotificationAlert: boolean
+  TripDataAnalytics: boolean
+  DocumentStorage: boolean
+  GeoFencing: boolean
+  Images: { Url?: string }[]
+  AdditionalImages: {
+    BackgroundImage: string
+    GeoFacing: string
+    MusicControl: string
+    RemoteImmobilization: string
+    HillHold: string
+    Display: string
+    OverSpeedAlert: string
+    Light: string
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

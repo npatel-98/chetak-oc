@@ -15,8 +15,12 @@ import {
   OrderWorksheet,
   Payment,
   Payments,
+  Auth,
+  Tokens,
+  Users,
 } from 'ordercloud-javascript-sdk'
 import { createOcAsyncThunk } from '../ocReduxHelpers'
+import { User } from 'lucide-react'
 
 export interface RecentOrder {
   order: RequiredDeep<Order>
@@ -31,11 +35,13 @@ export interface OcCurrentOrderState {
   payments?: RequiredDeep<Payment>[]
   shipEstimateResponse?: RequiredDeep<ShipEstimateResponse>
   recentOrders: RecentOrder[]
+  allOrders?: OrderWorksheet[]
 }
 
 const initialState: OcCurrentOrderState = {
   initialized: false,
   recentOrders: [],
+  allOrders: [],
 }
 
 export const removeAllPayments = createOcAsyncThunk<undefined, undefined>(
@@ -81,6 +87,39 @@ export const retrieveOrder = createOcAsyncThunk<RequiredDeep<OrderWorksheet> | u
         ThunkAPI.dispatch(retrievePayments(firstOrder.ID))
       }
       return worksheet
+    }
+    return undefined
+  }
+)
+
+export const retrieveAllOrders = createOcAsyncThunk<
+  RequiredDeep<OrderWorksheet>[] | undefined,
+  void
+>(
+  'ocCurrentOrder/retrieveAllOrders',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (_, _re) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // const sortBy = 'DateCreated' as any
+
+    // const accessToken = await Users.GetAccessToken('BAJAJ_Buyer', 'defaultbuyer', {
+    //   ClientID: '5476AA9A-483E-46E6-BF49-C3DDF4CDC671',
+    //   Roles: ['MeAddressAdmin', 'MeAdmin'],
+    // })
+    // console.log('@@accessToken', accessToken)
+    const response = await Orders.List('All', { filters: { Status: 'Open' } })
+
+    // const response = await Orders.List('All', {}, { accessToken: res.access_token })
+    // const productRes = await Me.ListProducts()
+    console.log('@@response', response)
+
+    const orders = response.Items
+    if (orders && orders.length > 0) {
+      const worksheetPromises = orders.map((order) =>
+        IntegrationEvents.GetWorksheet('Outgoing', order.ID)
+      )
+      const worksheets = await Promise.all(worksheetPromises)
+      return worksheets
     }
     return undefined
   }
@@ -261,7 +300,11 @@ export const submitOrder = createOcAsyncThunk<RecentOrder, any>(
   'ocCurrentOrder/submit',
   async (onSubmitted, ThunkAPI) => {
     const { ocCurrentOrder } = ThunkAPI.getState()
-    const submitResponse = await Orders.Submit('Outgoing', ocCurrentOrder.order.ID)
+    // const submitResponse = await Orders.Submit('Outgoing', ocCurrentOrder.order.ID)
+    const submitResponse = await Orders.Save('Outgoing', ocCurrentOrder.order.ID, {
+      ...ocCurrentOrder.order,
+      xp: { email: ocCurrentOrder?.lineItems?.[0]?.xp?.email },
+    })
     // eslint-disable-next-line no-use-before-define
     ThunkAPI.dispatch(clearCurrentOrder())
     return {
@@ -294,6 +337,14 @@ const ocCurrentOrderSlice = createSlice({
         state.order = action.payload.Order
         state.lineItems = action.payload.LineItems
         state.shipEstimateResponse = action.payload.ShipEstimateResponse
+      }
+    })
+    builder.addCase(retrieveAllOrders.pending, (state) => {
+      state.initialized = true
+    })
+    builder.addCase(retrieveAllOrders.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.allOrders = action.payload
       }
     })
     builder.addCase(createLineItem.fulfilled, (state, action) => {
