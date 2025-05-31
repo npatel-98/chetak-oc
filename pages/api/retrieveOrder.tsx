@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const email = encodeURIComponent(req.url?.split('=')[1])
+  const email = req.url?.split('=')[1]
 
   try {
     const formdata = new FormData()
