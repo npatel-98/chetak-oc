@@ -14,7 +14,7 @@ export interface OcCheckoutStepProps {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const OcCheckout: FunctionComponent<{ onSubmitted: any; setCheckoutStep?: any }> = ({
-  onSubmitted,
+  // onSubmitted,
   setCheckoutStep,
 }) => {
   const { push } = useRouter()
@@ -31,7 +31,7 @@ const OcCheckout: FunctionComponent<{ onSubmitted: any; setCheckoutStep?: any }>
   }
 
   const handleOrderSubmitted = (orderId: string) => {
-    onSubmitted(orderId)
+    // onSubmitted(orderId)
     push(`/confirmation/${orderId}`)
     // setCheckoutStep(0)
     // setStep(0)

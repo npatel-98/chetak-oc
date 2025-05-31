@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { initializeAuth } from './ocAuth'
 import logout from './ocAuth/logout'
 import { OcConfig, setConfig } from './ocConfig'
-import { retrieveAllOrders, retrieveOrder } from './ocCurrentOrder'
+import { retrieveOrder } from './ocCurrentOrder'
 import ocStore, { useOcDispatch, useOcSelector } from './ocStore'
 import { getUser } from './ocUser'
 
@@ -37,7 +37,6 @@ const OcInitializer: FunctionComponent<OcProviderProps> = ({ children, config })
       }
       if (!ocCurrentOrder.initialized) {
         dispatch(retrieveOrder())
-        dispatch(retrieveAllOrders())
       }
     }
   }, [dispatch, config, ocConfig, ocAuth, ocUser, ocCurrentOrder])

@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const email = encodeURIComponent(req.url?.split('=')[1])
+
   try {
     const formdata = new FormData()
     formdata.append('grant_type', 'password')
@@ -15,14 +17,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const myHeaders = new Headers()
     const accessTokenRes = await accessToken.json()
     myHeaders.append('Authorization', `Bearer ${accessTokenRes.access_token}`)
-    const orders = await fetch('https://sandboxapi.ordercloud.io/v1/orders/All', {
-      method: 'GET',
-      headers: myHeaders,
-    })
+    const orders = await fetch(
+      `https://sandboxapi.ordercloud.io/v1/orders/All?sortBy=!DateCreated&xp.email=${email}`,
+      {
+        method: 'GET',
+        headers: myHeaders,
+      }
+    )
     const orderRes = await orders.json()
 
     // Get worksheets for all orders
-    const worksheetPromises = orderRes.Items.map(async (order) => {
+    const worksheetPromises = orderRes?.Items?.map(async (order) => {
       const worksheet = await fetch(
         `https://sandboxapi.ordercloud.io/v1/orders/Outgoing/${order.ID}/worksheet`,
         {

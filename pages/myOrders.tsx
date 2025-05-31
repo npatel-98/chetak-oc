@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Bike, Clock, IndianRupee } from 'lucide-react'
 import { format } from 'date-fns'
 import { OrderWorksheetWithXP } from '../ordercloud/redux/xp'
 import ImageHelper from '../helper/Image'
 import { LineItem } from 'ordercloud-javascript-sdk'
-import { useOcSelector } from '../ordercloud/redux/ocStore'
+import { useOcDispatch, useOcSelector } from '../ordercloud/redux/ocStore'
+import { retrieveAllOrders } from '../ordercloud/redux/ocCurrentOrder'
 
 const OrderCard: React.FC<{ order: OrderWorksheetWithXP }> = ({ order }) => {
   const isValidDate = (dateString: string) => {
@@ -71,9 +72,9 @@ const OrderCard: React.FC<{ order: OrderWorksheetWithXP }> = ({ order }) => {
               <div className="md:col-span-3">
                 <h4 className="text-lg font-semibold mb-2">{item.Product.Name}</h4>
                 <div className="space-y-1 text-sm text-gray-600">
-                  <p>Model: {item.xp.model}</p>
-                  <p>Color: {item.xp.color}</p>
-                  <p>Dealership: {item.xp.dealership}</p>
+                  <p>Model: {item?.xp?.model}</p>
+                  <p>Color: {item?.xp?.color}</p>
+                  <p>Dealership: {item?.xp?.dealership}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -140,8 +141,15 @@ const OrderCardSkeleton = () => {
 }
 
 export default function MyOrders() {
+  const dispatch = useOcDispatch()
   const ocOrders = useOcSelector((s) => s?.ocCurrentOrder)
-  const orders = ocOrders.allOrders
+  const userEmail = typeof window !== 'undefined' && localStorage.getItem('userEmail')
+
+  useEffect(() => {
+    dispatch(retrieveAllOrders(userEmail))
+  }, [dispatch])
+
+  const orders = ocOrders.allOrders?.filter((x) => x?.LineItems?.[0]?.xp?.email === userEmail)
 
   if (ocOrders.loading) {
     return (

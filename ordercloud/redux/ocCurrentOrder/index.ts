@@ -92,12 +92,12 @@ export const retrieveOrder = createOcAsyncThunk<RequiredDeep<OrderWorksheet> | u
 
 export const retrieveAllOrders = createOcAsyncThunk<
   RequiredDeep<OrderWorksheet>[] | undefined,
-  void
+  string
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
->('ocCurrentOrder/retrieveAllOrders', async (_, _re) => {
+>('ocCurrentOrder/retrieveAllOrders', async (email, _re) => {
   try {
-    console.log('@@Ravi')
-    const response = await fetch('/api/retrieveOrder')
+    console.log('@@Ravi', email)
+    const response = await fetch(`/api/retrieveOrder?email=${email}`)
     const data = await response.json()
     console.log('@@response', data)
 
@@ -283,9 +283,8 @@ export const submitOrder = createOcAsyncThunk<RecentOrder, any>(
   'ocCurrentOrder/submit',
   async (onSubmitted, ThunkAPI) => {
     const { ocCurrentOrder } = ThunkAPI.getState()
-    // const submitResponse = await Orders.Submit('Outgoing', ocCurrentOrder.order.ID)
-    const submitResponse = await Orders.Save('Outgoing', ocCurrentOrder.order.ID, {
-      ...ocCurrentOrder.order,
+    const submitResponse = await Orders.Submit('Outgoing', ocCurrentOrder.order.ID)
+    await Orders.Patch('Outgoing', ocCurrentOrder.order.ID, {
       xp: { email: ocCurrentOrder?.lineItems?.[0]?.xp?.email },
     })
     // eslint-disable-next-line no-use-before-define
