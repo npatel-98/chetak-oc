@@ -26,6 +26,7 @@ export interface RecentOrder {
 
 export interface OcCurrentOrderState {
   initialized: boolean
+  loading?: boolean
   order?: RequiredDeep<Order>
   lineItems?: RequiredDeep<LineItem>[]
   payments?: RequiredDeep<Payment>[]
@@ -36,6 +37,7 @@ export interface OcCurrentOrderState {
 
 const initialState: OcCurrentOrderState = {
   initialized: false,
+  loading: false,
   recentOrders: [],
   allOrders: [],
 }
@@ -91,35 +93,20 @@ export const retrieveOrder = createOcAsyncThunk<RequiredDeep<OrderWorksheet> | u
 export const retrieveAllOrders = createOcAsyncThunk<
   RequiredDeep<OrderWorksheet>[] | undefined,
   void
->(
-  'ocCurrentOrder/retrieveAllOrders',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async (_, _re) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // const sortBy = 'DateCreated' as any
+>('ocCurrentOrder/retrieveAllOrders', async (_, _re) => {
+  try {
+    console.log('@@Ravi')
+    const response = await fetch('/api/retrieveOrder')
+    const data = await response.json()
+    console.log('@@response', data)
 
-    // const accessToken = await Users.GetAccessToken('BAJAJ_Buyer', 'defaultbuyer', {
-    //   ClientID: '5476AA9A-483E-46E6-BF49-C3DDF4CDC671',
-    //   Roles: ['MeAddressAdmin', 'MeAdmin'],
-    // })
-    // console.log('@@accessToken', accessToken)
-    const response = await Orders.List('All', { filters: { Status: 'Open' } })
-
-    // const response = await Orders.List('All', {}, { accessToken: res.access_token })
-    // const productRes = await Me.ListProducts()
-    console.log('@@response', response)
-
-    const orders = response.Items
-    if (orders && orders.length > 0) {
-      const worksheetPromises = orders.map((order) =>
-        IntegrationEvents.GetWorksheet('Outgoing', order.ID)
-      )
-      const worksheets = await Promise.all(worksheetPromises)
-      return worksheets
-    }
+    return data
+  } catch (error) {
+    console.error('Error fetching orders:', error)
     return undefined
   }
-)
+})
 
 export const deleteCurrentOrder = createOcAsyncThunk<void, void>(
   'ocCurrentOrder/delete',
@@ -337,8 +324,11 @@ const ocCurrentOrderSlice = createSlice({
     })
     builder.addCase(retrieveAllOrders.pending, (state) => {
       state.initialized = true
+      state.loading = true
     })
+
     builder.addCase(retrieveAllOrders.fulfilled, (state, action) => {
+      state.loading = false
       if (action.payload) {
         state.allOrders = action.payload
       }
