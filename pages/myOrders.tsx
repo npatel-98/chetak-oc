@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Bike, Clock, IndianRupee } from 'lucide-react'
 import { format } from 'date-fns'
 import { OrderWorksheetWithXP } from '../ordercloud/redux/xp'
@@ -6,6 +6,7 @@ import ImageHelper from '../helper/Image'
 import { LineItem } from 'ordercloud-javascript-sdk'
 import { useOcDispatch, useOcSelector } from '../ordercloud/redux/ocStore'
 import { retrieveAllOrders } from '../ordercloud/redux/ocCurrentOrder'
+import { offlineOrders } from '../helper/offlineOrders'
 
 const OrderCard: React.FC<{ order: OrderWorksheetWithXP }> = ({ order }) => {
   const isValidDate = (dateString: string) => {
@@ -72,9 +73,9 @@ const OrderCard: React.FC<{ order: OrderWorksheetWithXP }> = ({ order }) => {
               <div className="md:col-span-3">
                 <h4 className="text-lg font-semibold mb-2">{item.Product.Name}</h4>
                 <div className="space-y-1 text-sm text-gray-600">
-                  <p>Model: {item?.xp?.model}</p>
-                  <p>Color: {item?.xp?.color}</p>
-                  <p>Dealership: {item?.xp?.dealership}</p>
+                  <p>Model: {item?.xp?.selectedModel}</p>
+                  <p>Color: {item?.xp?.selectedColor}</p>
+                  <p>Dealership: {item?.xp?.dealer}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -144,12 +145,13 @@ export default function MyOrders() {
   const dispatch = useOcDispatch()
   const ocOrders = useOcSelector((s) => s?.ocCurrentOrder)
   const userEmail = typeof window !== 'undefined' && localStorage.getItem('userEmail')
+  const [activeTab, setActiveTab] = useState<'online' | 'offline'>('online')
 
   useEffect(() => {
     dispatch(retrieveAllOrders(userEmail))
   }, [dispatch])
 
-  const orders = ocOrders.allOrders?.filter((x) => x?.LineItems?.[0]?.xp?.email === userEmail)
+  const onlineOrders = ocOrders.allOrders?.filter((x) => x?.LineItems?.[0]?.xp?.email === userEmail)
 
   if (ocOrders.loading) {
     return (
@@ -165,12 +167,48 @@ export default function MyOrders() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">My Orders</h1>
-      {orders.length === 0 ? (
+
+      {/* Tabs */}
+      <div className="border-b border-gray-200 mb-6">
+        <nav className="-mb-px flex space-x-8">
+          <button
+            onClick={() => setActiveTab('online')}
+            className={`${
+              activeTab === 'online'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+          >
+            Online Orders
+          </button>
+          <button
+            onClick={() => setActiveTab('offline')}
+            className={`${
+              activeTab === 'offline'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+          >
+            Offline Orders
+          </button>
+        </nav>
+      </div>
+
+      {/* Orders List */}
+      {activeTab === 'online' ? (
+        onlineOrders?.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-6 text-center">
+            <p className="text-lg text-gray-600">No online orders found</p>
+          </div>
+        ) : (
+          onlineOrders?.map((order) => <OrderCard key={order?.Order.ID} order={order} />)
+        )
+      ) : offlineOrders.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6 text-center">
-          <p className="text-lg text-gray-600">No orders found</p>
+          <p className="text-lg text-gray-600">No offline orders found</p>
         </div>
       ) : (
-        orders?.map((order) => <OrderCard key={order?.Order.ID} order={order} />)
+        offlineOrders.map((order) => <OrderCard key={order?.Order.ID} order={order as unknown} />)
       )}
     </div>
   )

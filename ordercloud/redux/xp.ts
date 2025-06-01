@@ -75,39 +75,7 @@ export interface TransactionsXp {
 }
 
 export interface OrderXp {
-  OrderId?: string
-  OrderStatus?: string
-  AutoshipFrequency?: number
-  IsSubscription?: boolean
-  CardEndingIn?: string
-  CardExpiry?: string
-  CardType?: string
-  CustomerType?: string
-  FulfillmentId?: string
-  FulfillmentInstructions?: string
-  IsManualDelivery?: string
-  DeliveryProvider?: string
-  VerifyCustomerId?: string
-  FraudChecked?: string
-  DeliveryDueDate?: string
-  DeliveryAddress?: DeliveryAddress
-  ExpectedDeliveryDate?: string
-  PickupDeliveryDate?: string
-  PPC?: string
-  OverAuth?: number
-  RewardPoints?: number
-  PickupInfo?: PickupInfo
-  OrderToSOF?: boolean
-  OrderToD365?: boolean
-  Emails?: string[]
-  EmailContent?: EmailContent
-  DataAreaId?: string
-  CouponCode?: string
-  CouponDiscount?: number
-  TimeZone?: string
-  Status?: string
-  ManhattenStatus?: string
-  ManhattenEvent?: string
+  email?: string
 }
 
 export interface EmailContent {
@@ -137,9 +105,14 @@ export interface OrderPromotionXp {
 }
 export interface LineItemXp {
   model: string
+  mobile?: number
   location: string
   color: string
+  dealer?: string
   bookingAmount: number
+  buyingPlan?: string
+  selectedModel?: string
+  selectedColor?: string
   dealership: string
   name: string
   email: string
@@ -194,7 +167,20 @@ export interface ProductXp {
   TripDataAnalytics: boolean
   DocumentStorage: boolean
   GeoFencing: boolean
-  Images: { Url?: string }[]
+  Engine?: string
+  MaxTorque?: string
+  Gradeability?: string
+  Variant?: string
+  CertifiedRange?: string
+  MaxPower?: string
+  DriveModes?: string
+  EngineType?: string
+  Displacement?: string
+  RearSuspension?: string
+  FuelTank?: string
+  Bullets?: string[]
+  Images: { Url?: string; Position?: number }[]
+  GalleryImages?: { Url?: string }[]
   AdditionalImages: {
     BackgroundImage: string
     GeoFacing: string
