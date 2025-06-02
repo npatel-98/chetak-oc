@@ -122,7 +122,7 @@ const OcOrderConfirmation: FunctionComponent<OcOrderConfirmationProps> = ({ orde
             <div className="space-y-3">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>₹{order.Subtotal.toLocaleString()}</span>
+                <span>₹{2000}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
@@ -134,7 +134,7 @@ const OcOrderConfirmation: FunctionComponent<OcOrderConfirmationProps> = ({ orde
               </div>
               <div className="flex justify-between text-gray-800 font-semibold pt-3 border-t border-gray-200">
                 <span>Total</span>
-                <span>₹{order.Total.toLocaleString()}</span>
+                <span>₹{2000}</span>
               </div>
             </div>
           </div>

@@ -1,10 +1,9 @@
-import { Spec } from 'ordercloud-javascript-sdk'
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent } from 'react'
 import useOcProductDetail from '../../hooks/useOcProductDetail'
-import { useOcSelector } from '../../redux/ocStore'
 import formatPrice from '../../utils/formatPrice'
-import OcProductSpecField from './OcProductSpecField'
 import ImageHelper from '../../../helper/Image'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 interface OcProductDetailProps {
   productId: string
@@ -14,52 +13,9 @@ interface GalleryImage {
   Url: string
 }
 
-const determineDefaultOptionId = (spec: Spec) => {
-  if (spec.DefaultOptionID) return spec.DefaultOptionID
-  return spec.OptionCount ? spec.Options[0].ID : undefined
-}
-
 const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({ productId }) => {
-  const { product, specs } = useOcProductDetail(productId)
-
-  const [specValues, setSpecValues] = useState([])
-
-  const lineItem = useOcSelector((s) =>
-    s.ocCurrentOrder.lineItems
-      ? s.ocCurrentOrder.lineItems.find((li) => li.ID === productId)
-      : undefined
-  )
-
-  useEffect(() => {
-    if (lineItem) {
-      setSpecValues(lineItem.Specs)
-    } else if (specs) {
-      setSpecValues(
-        specs.map((s) => {
-          return {
-            SpecID: s.ID,
-            OptionID: determineDefaultOptionId(s),
-            Value: s.DefaultValue ? s.DefaultValue : undefined,
-          }
-        })
-      )
-    }
-  }, [specs, lineItem])
-
-  const handleSpecFieldChange = (values: { SpecID: string; OptionID?: string; Value?: string }) => {
-    setSpecValues((sv) =>
-      sv.map((s) => {
-        if (s.SpecID === values.SpecID) {
-          return {
-            SpecID: values.SpecID,
-            OptionID: values.OptionID === 'OpenText' ? undefined : values.OptionID,
-            Value: values.Value,
-          }
-        }
-        return s
-      })
-    )
-  }
+  const { product } = useOcProductDetail(productId)
+  const router = useRouter()
 
   return product ? (
     <div className=" my-8 ">
@@ -67,48 +23,31 @@ const OcProductDetail: FunctionComponent<OcProductDetailProps> = ({ productId })
         <div>
           {/* Left Column: Name and Image */}
           <div className="flex justify-between">
-            <div className="md:col-span-7 flex flex-col">
-              <div className="mb-4">
-                {/* Assuming "Bajaj Pulsar" comes from somewhere else or is static */}
-                <h2 className="text-[#0f172a] text-2xl font-black pb-4 lg:pb-8 ">{product.Name}</h2>
-              </div>
+            <div className="mb-4">
+              {/* Assuming "Bajaj Pulsar" comes from somewhere else or is static */}
+              <h2 className="text-[#0f172a] text-2xl font-black pb-4 lg:pb-8 ">{product.Name}</h2>
             </div>
 
             {/* Right Column: Price and Details */}
-            <div className="md:col-span-5 p-3 z-20">
+            <div className="p-3">
               {/* Add the "Pulsar NS125 price starting from" text */}
               <p className="text-sm mb-2">{product?.Name} price starting from</p>
               <p className="text-lg font-semibold pb-4 lg:pb-2 ">
                 {formatPrice(product.PriceSchedule?.PriceBreaks[0].Price)}
               </p>
               {/* Add the "Ex-showroom Price New Delhi Change City" text/link */}
-              <p className="text-xs">
+              <p className="text-xs mb-10">
                 Ex-showroom Price New Delhi{' '}
                 <a href="#" className="text-blue-600 hover:underline">
                   Change City
                 </a>
               </p>
-
-              {/* Description */}
-              <div className="mt-8">
-                <p className="" dangerouslySetInnerHTML={{ __html: product.Description }} />
-              </div>
-
-              {/* Specs - Keep specs if needed, remove quantity and button */}
-              {specs &&
-                specs.map((s) => {
-                  const specValue = specValues.find((sv) => sv.SpecID === s.ID)
-                  return (
-                    <OcProductSpecField
-                      key={s.ID}
-                      spec={s}
-                      onChange={handleSpecFieldChange}
-                      optionId={specValue && specValue.OptionID}
-                      value={specValue && specValue.Value}
-                    />
-                  )
-                })}
-
+              <Link
+                href={`${router?.asPath}/booking`}
+                className="bg-[#2563eb] px-4 text-white font-semibold py-3 rounded-full w-full text-center  transition hover:bg-[#1d4ed8]"
+              >
+                BOOK NOW
+              </Link>
               {/* Removed Quantity Input and Add/Update Cart Button */}
             </div>
           </div>

@@ -25,7 +25,7 @@ const OcCheckoutSummary: FunctionComponent = () => {
       <div className="space-y-3">
         <div className="flex justify-between items-center text-gray-600">
           <span className="text-sm md:text-base">Subtotal</span>
-          <span className="text-sm md:text-base font-medium">{formatPrice(order.Subtotal)}</span>
+          <span className="text-sm md:text-base font-medium">₹{2000}</span>
         </div>
 
         {order.PromotionDiscount ? (
@@ -62,9 +62,7 @@ const OcCheckoutSummary: FunctionComponent = () => {
 
         <div className="flex justify-between items-center">
           <span className="text-base md:text-lg font-semibold text-gray-800">Total</span>
-          <span className="text-base md:text-lg font-bold text-gray-900">
-            {formatPrice(order.Total)}
-          </span>
+          <span className="text-base md:text-lg font-bold text-gray-900">₹{2000}</span>
         </div>
       </div>
     </div>

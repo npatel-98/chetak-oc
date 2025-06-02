@@ -31,7 +31,7 @@ const OcLineItemCard: FunctionComponent<OcLineItemCardProps> = ({ lineItem, edit
                 {lineItem.Quantity}
               </div>
             </div>
-            <div className="text-[#2563eb] font-bold">₹{lineItem.LineTotal}</div>
+            <div className="text-[#2563eb] font-bold">₹{2000}</div>
           </div>
 
           {editable && (

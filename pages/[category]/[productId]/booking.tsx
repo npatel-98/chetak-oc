@@ -33,6 +33,7 @@ export default function ProductBookingPage() {
   const [selectedModel, setSelectedModel] = useState('')
   const [selectedColor, setSelectedColor] = useState('')
   const [currentImage, setCurrentImage] = useState('')
+  const [dealers, setDealers] = useState<string[]>([''])
 
   useEffect(() => {
     const getVariants = async () => {
@@ -66,6 +67,14 @@ export default function ProductBookingPage() {
     }
   }, [selectedModel, variants])
 
+  useEffect(() => {
+    const getDealers = async () => {
+      const res = await Me.ListBuyerSellers()
+      setDealers(res?.Items?.map((x) => x?.Name))
+    }
+    if (product?.ID) getDealers()
+  }, [product?.ID])
+
   const handleModelChange = (e) => {
     setSelectedModel(e.target.value)
   }
@@ -76,12 +85,6 @@ export default function ProductBookingPage() {
   }
 
   // Mock data - replace with your actual data
-  const dealers = [
-    'Authorized Dealer 1',
-    'Authorized Dealer 2',
-    'Authorized Dealer 3',
-    'Authorized Dealer 4',
-  ]
 
   const buyingOptions = ['Within 1 month', 'Within 3 months', 'Within 6 months', 'Just exploring']
 
