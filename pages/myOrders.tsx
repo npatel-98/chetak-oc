@@ -78,13 +78,17 @@ const OrderCard: React.FC<{ order: OrderWorksheetWithXP }> = ({ order }) => {
                   <p>Dealership: {item?.xp?.dealer}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    <Bike className="w-3 h-3 mr-1" />
-                    Range: {item.Product.xp.Range}
-                  </span>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Top Speed: {item.Product.xp.TopSpeed}
-                  </span>
+                  {item.Product.xp.Range?.length > 0 && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <Bike className="w-3 h-3 mr-1" />
+                      Range: {item.Product.xp.Range}
+                    </span>
+                  )}
+                  {item.Product.xp.TopSpeed?.length > 0 && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Top Speed: {item.Product.xp.TopSpeed}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

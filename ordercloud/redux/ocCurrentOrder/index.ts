@@ -96,7 +96,6 @@ export const retrieveAllOrders = createOcAsyncThunk<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >('ocCurrentOrder/retrieveAllOrders', async (email, _re) => {
   try {
-    console.log('@@Ravi', email)
     const response = await fetch(`/api/retrieveOrder?email=${email}`)
     const data = await response.json()
     console.log('@@response', data)
